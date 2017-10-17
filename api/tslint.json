@@ -1,6 +1,7 @@
 {
   "extends": "tslint-microsoft-contrib",
   "rules": {
-    "no-any": false
+    "no-any": false,
+    "no-console": false
   }
 }

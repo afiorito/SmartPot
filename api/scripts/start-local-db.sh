@@ -1,0 +1,1 @@
+java -Djava.library.path=../../../localDB/DynamoDBLocal_lib -jar /Users/Anthony/Desktop/Cloud/localDB/DynamoDBLocal.jar -sharedDb
