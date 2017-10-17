@@ -1,0 +1,22 @@
+service:
+  name: aws-nodejs-typescript
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpackIncludeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  region: us-east-1
+
+functions:
+  hello:
+    handler: endpoints/hello.main
+    events:
+      - http:
+          method: get
+          path: hello

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": [ "es6", "dom" ],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "allowJs": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "./endpoints/*.ts",
+    "./db/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
