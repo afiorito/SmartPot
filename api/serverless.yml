@@ -14,9 +14,9 @@ provider:
   region: us-east-1
 
 functions:
-  hello:
-    handler: endpoints/hello.main
+  createSmartPot:
+    handler: endpoints/create-smartpot.main
     events:
       - http:
           method: get
-          path: hello
+          path: create

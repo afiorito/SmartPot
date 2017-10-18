@@ -1,16 +1,11 @@
 /**
  * CREATE SMART POT TABLE
+ * Configures the table structure
+ * Creates the table in DynamoDB
  */
 
 import * as AWS from 'aws-sdk';
-import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
-
-const config: ServiceConfigurationOptions = {
-  region: 'us-east-1',
-  endpoint: process.env.ENDPOINT || undefined
-};
-
-const dynamoDB: AWS.DynamoDB = new AWS.DynamoDB(config);
+import { dynamoDB } from '../dynamoDB';
 
 const params: AWS.DynamoDB.CreateTableInput = {
   TableName: 'smartpots',

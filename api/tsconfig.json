@@ -15,7 +15,7 @@
   },
   "include": [
     "./endpoints/*.ts",
-    "./db/*.ts"
+    "./db/**/*.ts"
   ],
   "exclude": [
     "node_modules"

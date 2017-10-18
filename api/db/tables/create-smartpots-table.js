@@ -1,14 +1,11 @@
 "use strict";
 /**
  * CREATE SMART POT TABLE
+ * Configures the table structure
+ * Creates the table in DynamoDB
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const AWS = require("aws-sdk");
-const config = {
-    region: 'us-east-1',
-    endpoint: process.env.ENDPOINT || undefined
-};
-const dynamoDB = new AWS.DynamoDB(config);
+const dynamoDB_1 = require("../dynamoDB");
 const params = {
     TableName: 'smartpots',
     KeySchema: [
@@ -22,7 +19,7 @@ const params = {
         WriteCapacityUnits: 5
     }
 };
-dynamoDB.createTable(params, (err, data) => {
+dynamoDB_1.dynamoDB.createTable(params, (err, data) => {
     if (err) {
         console.error(`Unable to create table. Error JSON: ${JSON.stringify(err, null, 2)}`);
     }
