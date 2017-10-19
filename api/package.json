@@ -1,23 +1,23 @@
 {
-  "name": "aws-nodejs-typescript",
+  "name": "smartpot_api",
   "version": "1.0.0",
-  "description": "Serverless webpack example using Typescript",
-  "main": "handler.js",
+  "description": "SmartPot REST API",
   "scripts": {
-    "lint": "tslint *.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/aws-lambda": "0.0.16",
-    "@types/node": "^8.0.44",
     "aws-sdk": "^2.130.0",
     "serverless-webpack": "^3.0.0",
-    "ts-loader": "^2.3.7",
-    "tslint": "^5.7.0",
-    "tslint-microsoft-contrib": "^5.0.1",
-    "typescript": "^2.5.2",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-0": "^6.24.1",
     "webpack": "^3.6.0",
     "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

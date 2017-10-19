@@ -22,8 +22,11 @@ module.exports = {
   },
   target: 'node',
   module: {
-    loaders: [
-      { test: /\.ts(x?)$/, loader: 'ts-loader' },
-    ],
+    rules: [{
+      test: /\.js$/,
+      loader: 'babel-loader',
+      include: __dirname,
+      exclude: /node_modules/,
+    }]
   },
 };
