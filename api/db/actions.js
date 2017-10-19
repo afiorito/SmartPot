@@ -13,29 +13,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const dynamoDB_1 = require("./dynamoDB");
 // tslint:disable-next-line:export-name
-function findOrCreate(tableName, identifier) {
+function findSmartPot(potId) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('hello', potId);
         const getParams = {
-            TableName: tableName,
+            TableName: 'smartpots',
             Key: {
-                [identifier.primaryKey]: identifier.value
+                potId
             }
         };
         const result = yield execute('get', getParams);
         if (!result.Item) {
-            const putParams = {
-                TableName: tableName,
-                Item: {
-                    [identifier.primaryKey]: identifier.value
-                }
-            };
-            yield execute('put', putParams);
-            return { item: result.Item, isFound: false };
+            return { item: undefined, isFound: false };
         }
         return { item: result.Item, isFound: true };
     });
 }
-exports.findOrCreate = findOrCreate;
+exports.findSmartPot = findSmartPot;
 function execute(action, params) {
     return dynamoDB_1.documentClient[action](params).promise();
 }

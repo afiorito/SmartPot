@@ -11,12 +11,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const actions_1 = require("../db/actions");
 const response_helper_1 = require("./helpers/response-helper");
 const main = (event, context, cb) => __awaiter(this, void 0, void 0, function* () {
-    const result = yield actions_1.findOrCreate('smartpots', { primaryKey: 'potId', value: 'pot2' });
-    if (!result.isFound) {
-        cb(undefined, response_helper_1.success({ status: true }));
+    const potId = event.pathParameters.potId;
+    try {
+        const result = yield actions_1.findSmartPot(potId);
+        if (result.isFound) {
+            cb(undefined, response_helper_1.success({ smarpot: result.item }));
+        }
+        else {
+            cb(undefined, response_helper_1.failure({ status: false }));
+        }
     }
-    else {
-        cb(undefined, response_helper_1.failure({ status: false }));
+    catch (e) {
+        cb(undefined, response_helper_1.failure({ status: e }));
     }
 });
 exports.main = main;

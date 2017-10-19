@@ -6,29 +6,18 @@ import * as AWS from 'aws-sdk';
 import { documentClient } from './dynamoDB';
 
 // tslint:disable-next-line:export-name
-export async function findOrCreate(
-  tableName: string,
-  identifier: { primaryKey: string, value: any}
-): Promise<{ item: object | undefined, isFound: boolean}> {
+export async function findSmartPot(potId: string): Promise<{ item: object | undefined, isFound: boolean}> {
+  console.log('hello' , potId);
   const getParams: AWS.DynamoDB.DocumentClient.GetItemInput = {
-    TableName: tableName,
+    TableName: 'smartpots',
     Key: {
-      [identifier.primaryKey]: identifier.value
+      potId
     }
   };
 
   const result: AWS.DynamoDB.DocumentClient.GetItemOutput = await execute('get', getParams);
   if (!result.Item) {
-    const putParams: AWS.DynamoDB.DocumentClient.PutItemInput = {
-      TableName: tableName,
-      Item: {
-        [identifier.primaryKey]: identifier.value
-      }
-    };
-
-    await execute('put', putParams);
-
-    return { item: result.Item, isFound: false };
+    return { item: undefined, isFound: false };
   }
 
   return { item: result.Item, isFound: true };
