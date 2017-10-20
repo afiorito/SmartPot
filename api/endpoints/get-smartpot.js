@@ -4,7 +4,7 @@
  * in DynamoDB on AWS.
  */
 
-import { findSmartPot } from '../db/actions';
+const findSmartPot = require('../db/actions').findSmartPot;
 import { failure, success } from './helpers/response-helper';
 
 export const main = async (event, context, cb) => {
@@ -13,7 +13,7 @@ export const main = async (event, context, cb) => {
     const result = await findSmartPot(potId);
 
     if (result.isFound) {
-      cb(null, success({ smarpot: result.item }));
+      cb(null, success(result.item));
     } else {
       cb(null, failure({ status: false }));
     }

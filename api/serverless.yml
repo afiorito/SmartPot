@@ -31,22 +31,22 @@ functions:
     events:
       - http:
           method: get
-          path: smarpot/{potId}
+          path: smartpot/{potId}
   moisture:
     handler: endpoints/moisture.main
     events:
       - http:
           method: get
-          path: smarpot/{potId}/moisture
+          path: smartpot/{potId}/moisture
       - http:
           method: put
-          path: smarpot/{potId}/moisture
+          path: smartpot/{potId}/moisture
   watered:
     handler: endpoints/watered.main
     events:
       - http:
           method: get
-          path: smarpot/{potId}/watered
+          path: smartpot/{potId}/watered
       - http:
           method: put
-          path: smarpot/{potId}/watered
+          path: smartpot/{potId}/watered

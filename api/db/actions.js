@@ -2,7 +2,6 @@
  * DYNAMODB HELPER FUNCTIONS
  */
 
-import * as AWS from 'aws-sdk';
 import { documentClient } from './dynamoDB';
 
 export async function findSmartPot(potId) {
@@ -46,6 +45,6 @@ export function getSmartPot(potId) {
   return execute('get', getParams);
 }
 
-function execute(action, params) {
+export function execute(action, params) {
   return documentClient[action](params).promise();
 }
