@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 const getSmartpot = rewire('../endpoints/get-smartpot');
 
-describe('Get Smartpot', () => {
+describe('Get Smartpot Endpoint', () => {
   const mockSmartPot = { potId: 'pot1', moisture: 0, lastWatered: 0 };
   const mockContext = {};
 
@@ -18,7 +18,7 @@ describe('Get Smartpot', () => {
     cb.reset();
   });
 
-  it('returns the smarpot if it is found', async () => {
+  it('GET – returns the smarpot if it is found', async () => {
     getSmartpot.__set__('findSmartPot', (potId) => { 
       return { item: mockSmartPot, isFound: true };  
     });
@@ -37,7 +37,7 @@ describe('Get Smartpot', () => {
     });
   });
 
-  it('returns proper status code and body on failure', async () => {
+  it('GET – returns proper status code and body on failure', async () => {
     getSmartpot.__set__('findSmartPot', (potId) => { 
       return { item: undefined, isFound: false };  
     });
