@@ -1,0 +1,7 @@
+{
+  "method": "PUT",
+  "pathParameters": {
+    "potId": "pot6"
+  },
+  "body": "{ \"moisture\": 5 }"
+}
