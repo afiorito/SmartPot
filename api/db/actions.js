@@ -15,15 +15,17 @@ export async function findSmartPot(potId) {
   return { item: result.Item, isFound: true };
 }
 
-export async function updateMoisture(moisture, potId) {
+export async function updateAttribute(attributeValue, potId) {
+  const attribute = Object.keys(attributeValue)[0];
+  const value = attributeValue[attribute];
   const params = {
     TableName: 'smartpots',
     Key: {
       potId
     },
-    UpdateExpression: 'set moisture = :moisture',
+    UpdateExpression: `set ${attribute} = :${attribute}`,
     ExpressionAttributeValues: {
-      ':moisture': moisture
+      [`:${attribute}`]: value
     },
     ConditionExpression: 'attribute_exists(potId)',
     ReturnValues: 'ALL_NEW'

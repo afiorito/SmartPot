@@ -1,7 +1,7 @@
 /**
- * MOISTURE ENDPOINT
- * GET: retrieve the moisture for a smartpot
- * PUT: update the moisture of a smartpot
+ * WATERED ENDPOINT
+ * GET: retrieve the last time the plant was watered
+ * PUT: update the watering time of the plant
  */
 
 import { findSmartPot, updateAttribute } from '../db/actions';
@@ -29,19 +29,17 @@ async function get(event) {
 
   const smartpot = await findSmartPot(potId);
 
-  if(smartpot.isFound) {
-    return success({ moisture: smartpot.item.moisture });
-  }
-
-  return failure({ status: false });
+  if(!smartpot.isFound) return failure({ status: false });
+  
+  return success({ lastWatered: smartpot.item.lastWatered });
 
 }
 
 async function put(event) {
   const potId = event.pathParameters.potId;
-  const { moisture } = JSON.parse(event.body);
+  const lastWatered = new Date().getTime();
 
-  await updateAttribute({ moisture }, potId);
+  await updateAttribute({ lastWatered }, potId);
 
   return success({ status: true });
 }

@@ -2,6 +2,5 @@
   "httpMethod": "PUT",
   "pathParameters": {
     "potId": "pot7"
-  },
-  "body": "{ \"moisture\": 7 }"
+  }
 }

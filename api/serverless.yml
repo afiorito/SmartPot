@@ -26,8 +26,8 @@ provider:
         Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 functions:
-  createSmartPot:
-    handler: endpoints/create-smartpot.main
+  getSmartPot:
+    handler: endpoints/get-smartpot.main
     events:
       - http:
           method: get
@@ -41,3 +41,12 @@ functions:
       - http:
           method: put
           path: smarpot/{potId}/moisture
+  watered:
+    handler: endpoints/watered.main
+    events:
+      - http:
+          method: get
+          path: smarpot/{potId}/watered
+      - http:
+          method: put
+          path: smarpot/{potId}/watered
