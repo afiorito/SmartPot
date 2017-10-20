@@ -4,7 +4,8 @@
  * PUT: update the watering time of the plant
  */
 
-import { findSmartPot, updateAttribute } from '../db/actions';
+const findSmartPot = require('../db/actions').findSmartPot;
+const updateAttribute = require('../db/actions').updateAttribute;
 import { failure, success } from './helpers/response-helper';
 
 export const main = async (event, context, cb) => {
