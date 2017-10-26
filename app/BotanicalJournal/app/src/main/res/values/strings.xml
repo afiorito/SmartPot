@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BotanicalJournal</string>
+    <string name="createButtonText">Create A Plant</string>
+    <string name="noPlantsText">You have no plants.</string>
+    <string name="lastWatered">Last Watered</string>
+    <string name="moistureLevelText">Moisture Level</string>
 </resources>
