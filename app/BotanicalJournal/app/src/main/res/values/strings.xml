@@ -1,7 +1,12 @@
 <resources>
-    <string name="app_name">BotanicalJournal</string>
+    <string name="app_name">Botanical Journal</string>
     <string name="createButtonText">Create A Plant</string>
     <string name="noPlantsText">You have no plants.</string>
     <string name="lastWatered">Last Watered</string>
     <string name="moistureLevelText">Moisture Level</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

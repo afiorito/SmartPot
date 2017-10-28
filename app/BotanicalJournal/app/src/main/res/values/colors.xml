@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#7FA676</color>
     <color name="colorAccent">#F8F2AB</color>
     <color name="colorDarkAccent">#019A88</color>
+    <color name="clickedMenuItem">#eee</color>
 </resources>
