@@ -30,7 +30,7 @@ public class PlantFragment extends Fragment {
 
         // Create temporary plants
         ArrayList<Plant> plants = new ArrayList<>();
-        for (int i = 1; i <= 0 ; i++){
+        for (int i = 1; i <= 5 ; i++){
             plants.add(new Plant("Plant " + i));
         }
 
