@@ -41,7 +41,7 @@ public class PlantAdapter extends ArrayAdapter {
 
         // Set layout elements
         plantNameTextView.setText(plantName);
-        plantImage.setImageDrawable(getContext().getDrawable(R.drawable.ic_plant));
+        plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower));
         progressBar.setProgress(moisture);
 
         return plantRow;

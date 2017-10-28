@@ -3,6 +3,8 @@
     <color name="colorPrimary">#B5D6A5</color>
     <color name="colorPrimaryDark">#7FA676</color>
     <color name="colorAccent">#F8F2AB</color>
+    <color name="gradientStart">#13B0A5</color>
+    <color name="gradientEnd">#0071A7</color>
     <color name="colorDarkAccent">#019A88</color>
     <color name="clickedMenuItem">#eee</color>
 </resources>
