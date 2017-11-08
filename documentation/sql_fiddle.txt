@@ -1,0 +1,45 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE plants (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  phylogeny TEXT,
+  birth_date DATETIME,
+  notes TEXT,
+  created_at DATETIME DEFAULT (strftime('%s', 'now'))
+);
+
+CREATE TABLE last_watered_times (
+  id INTEGER PRIMARY KEY,
+  plant_id INTEGER,
+  value DATETIME,
+  created_at DATETIME DEFAULT (strftime('%s', 'now')),
+  CONSTRAINT fk_plants FOREIGN KEY(plant_id)
+  REFERENCES plants(id)
+  ON DELETE CASCADE
+);
+
+CREATE TABLE moisture_levels (
+  id INTEGER PRIMARY KEY,
+  plant_id INTEGER,
+  value DATETIME,
+  created_at DATETIME DEFAULT (strftime('%s', 'now')),
+  CONSTRAINT fk_plants FOREIGN KEY(plant_id)
+  REFERENCES plants(id)
+  ON DELETE CASCADE
+);
+
+INSERT INTO plants(name, phylogeny, birth_date, notes)
+VALUES ("Scambosia", "Scammer", 1509938975, "No Notes");
+
+INSERT INTO plants(name, phylogeny, birth_date, notes)
+VALUES ("Scambosia", "Scammer", 1509922269, "No Notes");
+
+INSERT INTO plants(name, phylogeny, birth_date, notes)
+VALUES ("Morning Glory", "Glory", 1509922269, "No Notes");
+
+INSERT INTO moisture_levels(value, plant_id, created_at)
+VALUES (140, 1, 1509922269);
+
+INSERT INTO moisture_levels(value, plant_id, created_at)
+VALUES (100, 1, 1509938975);

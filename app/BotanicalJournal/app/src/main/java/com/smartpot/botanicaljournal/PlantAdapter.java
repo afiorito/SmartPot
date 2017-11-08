@@ -32,7 +32,7 @@ public class PlantAdapter extends ArrayAdapter {
 
         //Get plant info
         String plantName = ((Plant)getItem(position)).getName();
-        int moisture = ((Plant)getItem(position)).getMoisture();
+        int moisture = ((Plant)getItem(position)).getMoistureLevel();
 
         // Get reference to layout elements
         TextView plantNameTextView = plantRow.findViewById(R.id.plantName);
