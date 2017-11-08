@@ -5,7 +5,7 @@
     android:id="@+id/plantRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f5faf7"
+    android:background="@color/colorLightBackground"
     android:paddingBottom="0dp">
 
 
@@ -37,7 +37,7 @@
         android:includeFontPadding="false"
         android:lines="1"
         android:maxLines="1"
-        android:text="@string/plant_name"
+        android:text="@string/plantNameText"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="36sp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -52,7 +52,7 @@
         android:layout_row="2"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:text="@string/lastWatered"
+        android:text="@string/lastWateredText"
         android:textAllCaps="true"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/plantName"
@@ -60,11 +60,11 @@
         android:layout_marginStart="0dp" />
 
     <TextView
-        android:id="@+id/lastWateredTime"
+        android:id="@+id/lastWateredValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:text="@string/last_watered_time"
+        android:text="@string/lastWateredValue"
         app:layout_constraintLeft_toLeftOf="@+id/progressBar"
         app:layout_constraintTop_toBottomOf="@+id/plantName"
         android:layout_marginStart="0dp"
@@ -73,7 +73,7 @@
         app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
-        android:id="@+id/moistureLevelText"
+        android:id="@+id/levelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="2dp"
@@ -98,9 +98,9 @@
         android:progressDrawable="@layout/progress_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toRightOf="@+id/moistureLevelText"
+        app:layout_constraintLeft_toRightOf="@+id/levelText"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lastWateredTime"
+        app:layout_constraintTop_toBottomOf="@+id/lastWateredValue"
         app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.Guideline
