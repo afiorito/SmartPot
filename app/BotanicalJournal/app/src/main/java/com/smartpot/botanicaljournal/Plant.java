@@ -19,9 +19,10 @@ public class Plant {
         name = "Plant Name";
         type = "Some fancy type";
         Random r = new Random();
-        moisture = r.nextInt(100);
+        moisture = 0;
         lastWatered = "0 hours";
         birthday = "-";
+        notes = "";
     }
 
 
@@ -32,6 +33,7 @@ public class Plant {
         moisture = r.nextInt(100);
         lastWatered = "5 hours";
         birthday = "-";
+        notes = "";
     }
 
     public String getImagePath() {

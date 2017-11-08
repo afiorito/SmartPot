@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class AddPlantFragment extends Fragment {
     // Reference to fields
     private ProfileField plantNameField;
     private ProfileField plantTypeField;
+    private ProgressBar progressBar;
     private ProfileField lastWateredField;
     private EditText notesEditText;
     private TextView bDayField;
@@ -72,13 +74,14 @@ public class AddPlantFragment extends Fragment {
 
         plantNameField = view.findViewById(R.id.plantName);
         plantTypeField = view.findViewById(R.id.plantType);
+        progressBar = view.findViewById(R.id.progressBar);
         lastWateredField = view.findViewById(R.id.lastWatered);
         notesEditText = view.findViewById(R.id.notesEditText);
         bDayField = view.findViewById(R.id.bDay);
         plantImage = view.findViewById(R.id.plantImage);
         addImage = view.findViewById(R.id.addImage);
 
-        // Set OnClickListener to Birthday EditText
+        // Set OnClickListener to birthday view
         bDayField.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -101,9 +104,11 @@ public class AddPlantFragment extends Fragment {
 
             case EDITPLANT:
                 displayMode = DisplayMode.WRITE;
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Edit A Plant");
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Editing " + plant.getName());
 
                 setFieldVisibilities(View.VISIBLE);
+
+                addImage.setVisibility(View.VISIBLE);
 
                 break;
 
@@ -139,37 +144,23 @@ public class AddPlantFragment extends Fragment {
                 switch(plantViewState){
                     case ADDPLANT: //addImage should be gone
                         plantViewState = plantViewState.VIEWPLANT;
-                        displayMode = DisplayMode.READ_ONLY; // Set display mode
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(plant.getName()); // Set title of navigation bar
-                        menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
-
-                        setFieldValues();
-                        setFieldVisibilities(View.VISIBLE);
-
                         break;
 
                     case EDITPLANT:
                         plantViewState = plantViewState.VIEWPLANT;
-                        displayMode = DisplayMode.READ_ONLY;
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(plant.getName());
-                        menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
-
-                        addImage.setVisibility(View.INVISIBLE);
                         break;
 
                     case VIEWPLANT:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Editing " + plant.getName());
-                        menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
-
-
                         plantViewState = plantViewState.EDITPLANT;
-                        displayMode = DisplayMode.WRITE;
-                        addImage.setVisibility(View.VISIBLE);
-
                         break;
 
                 }
+                if (displayMode == DisplayMode.WRITE)
+                    menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
+                else
+                    menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
 
+                setDisplayMode();
                 setAllFieldModes(displayMode);
 
                 return true;
@@ -193,8 +184,9 @@ public class AddPlantFragment extends Fragment {
             notesEditText.setFocusable(false);
         }else{
             bDayField.setClickable(true);
-            notesEditText.setFocusableInTouchMode(false);
-            notesEditText.setFocusable(false);
+            notesEditText.setFocusableInTouchMode(true);
+            notesEditText.setFocusable(true);
+            notesEditText.clearFocus();
         }
     }
 
@@ -205,6 +197,7 @@ public class AddPlantFragment extends Fragment {
         //ADD CHECK FOR EMPTY NAME
         plantNameField.setText(plant.getName());
         plantTypeField.setText(plant.getType());
+        progressBar.setProgress(plant.getMoisture());
         lastWateredField.setText(plant.getLastWatered() + " ago");
         notesEditText.setText(plant.getNotes());
     }
