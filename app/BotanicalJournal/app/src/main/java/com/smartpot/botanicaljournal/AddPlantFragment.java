@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class AddPlantFragment extends Fragment {
 
@@ -70,7 +72,6 @@ public class AddPlantFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         pc = new PlantController(getContext());
-        Log.i("TAG", plant.getBirthDate() + "");
     }
 
     @Override
@@ -246,6 +247,33 @@ public class AddPlantFragment extends Fragment {
         return "";
     }
 
+    private String formatLastWateredTime(Date lastWatered) {
+        if(lastWatered == null) return "Never";
+        long time = new Date(lastWatered.getTime()).getTime();
+        long now = System.currentTimeMillis();
+
+        long difference = now - time;
+
+        CharSequence ago;
+
+        // if difference is greater than a year
+        if (difference > 32659200000L)
+            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS,
+                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
+
+        // if difference is greater than a week
+        else if (difference > 604800000L)
+            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS,
+                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE);
+
+        else
+            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
+
+
+
+        return ago.toString();
+    }
+
     ImageButton.OnClickListener clearDate = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -257,7 +285,10 @@ public class AddPlantFragment extends Fragment {
     Button.OnClickListener updateLastWatered = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.i("TAG", "CLick");
+            Date newDate = new Date();
+            pc.updateLastWatered(plant, newDate);
+            plant.setLastWatered(newDate);
+            setFieldValues();
         }
     };
 
@@ -298,7 +329,7 @@ public class AddPlantFragment extends Fragment {
         progressBar.setProgress(plant.getMoistureLevel());
         String date = formatDate(plant.getBirthDate());
         bDayField.setText(date.equals("") ? "Enter Birthday" : date);
-        lastWateredField.setText(plant.getLastWatered() + " ago");
+        lastWateredField.setText(formatLastWateredTime(plant.getLastWatered()));
         notesEditText.setText(plant.getNotes());
         potIdEditText.setText(plant.getPotId());
 

@@ -2,6 +2,9 @@ package com.smartpot.botanicaljournal;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by Anthony on 2017-11-08.
  */
@@ -11,6 +14,10 @@ public class PlantController {
 
     PlantController(Context context) {
         handler = new DBHandler(context);
+    }
+
+    public ArrayList<Plant> getPlants() {
+        return handler.getPlants();
     }
 
     public boolean createPlant(Plant plant) {
@@ -32,6 +39,13 @@ public class PlantController {
     public boolean deletePlant(Plant plant) {
 
         handler.deletePlant(plant.getId());
+
+        return true;
+    }
+
+    public boolean updateLastWatered(Plant plant, Date date) {
+
+        handler.addLastWateredTimeForPlant(plant, date);
 
         return true;
     }

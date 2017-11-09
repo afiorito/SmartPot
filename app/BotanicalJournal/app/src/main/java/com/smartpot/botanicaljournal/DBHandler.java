@@ -189,7 +189,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if(c.moveToFirst()) {
             moistureLevel = c.getInt(c.getColumnIndex(COL_MOISTURE_VALUE));
-            Log.i("TAG", "moisture " + moistureLevel);
         }
 
         c.close();
@@ -204,13 +203,15 @@ public class DBHandler extends SQLiteOpenHelper {
         Date lastWatered = null;
 
         String query = "SELECT id, value, MAX(created_at) as created_at FROM " + TABLE_LAST_WATERED
-                + " WHERE id = " + id
+                + " WHERE plant_id = " + id
                 + ";";
 
         Cursor c = db.rawQuery(query, null);
 
         if(c.moveToFirst()) {
-            lastWatered = new Date(c.getLong(c.getColumnIndex(COL_WATERED_VALUE)));
+            long date = c.getLong(c.getColumnIndex(COL_WATERED_VALUE));
+            if (date > 0)
+                lastWatered = new Date(date);
         }
 
         c.close();
@@ -229,7 +230,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void addMoistureLevelForPlant(Plant plant, int value) {
         SQLiteDatabase db = getWritableDatabase();
-        Log.i("TAG", "dbId" + value);
+
         ContentValues cv = new ContentValues();
         cv.put(COL_MOISTURE_VALUE, value);
         cv.put(COL_PLANT_ID, plant.getId());
@@ -244,7 +245,9 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_WATERED_VALUE, date.getTime());
         cv.put(COL_PLANT_ID, plant.getId());
+        Log.i("TAG", "CVVVV " + cv.getAsLong(COL_WATERED_VALUE) + "");
         db.insert(TABLE_LAST_WATERED, null, cv);
+        Log.i("TAG", "ADDED: " + date.getTime());
 
         db.close();
     }

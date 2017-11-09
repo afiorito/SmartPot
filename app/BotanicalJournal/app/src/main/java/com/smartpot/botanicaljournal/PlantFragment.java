@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class PlantFragment extends Fragment {
 
-    private DBHandler handler;
+    private PlantController pc;
 
     public static PlantFragment newInstance() {
         return new PlantFragment();
@@ -35,10 +35,10 @@ public class PlantFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_plant, container, false);
 
         // Initialize Database Controller
-        handler = new DBHandler(getContext());
+        pc = new PlantController(getContext());
 
         // Load plants from the database
-        ArrayList<Plant> plants = handler.getPlants();
+        ArrayList<Plant> plants = pc.getPlants();
 //        plants.add(new Plant(0, "Scammy", "Scammer", new Date(), "", new Date(), 0));
 
         // Create plant adapter
