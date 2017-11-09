@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,11 +21,12 @@ import java.util.Date;
  * Created by MG on 2017-11-05.
  */
 
-public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+
+    final Calendar c = Calendar.getInstance();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
-        final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
@@ -36,23 +39,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day) {
         //Set date text view to plant's birthday
 
-        String date = Integer.toString(year)+ "-" + Integer.toString((month +1)) + "-" +Integer.toString(day);
-        Log.d("DatePickerFragment", "date = " + date);
-
-        SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat writeFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
-
-        try {
-            date = writeFormat.format(readFormat.parse(date));
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
-
-        Log.v("DatePickerFragment",date);
-
-        TextView bDay = (TextView) getActivity().findViewById(R.id.bDay);
-        bDay.setText(date);
-        Log.v("DatePickerFragment", "Converted the date format");
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        AddPlantFragment plantFragment = ((AddPlantFragment) getTargetFragment());
+        plantFragment.setDate(c.getTime());
     }
 
 }

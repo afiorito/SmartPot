@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQuery;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -37,6 +38,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COL_PLANT_PHYLO = "phylogeny";
     private static final String COL_PLANT_BIRTH_DATE = "birth_date";
     private static final String COL_PLANT_NOTES = "notes";
+    private static final String COL_PLANT_IMAGE = "image";
+    private static final String COL_PLANT_POT_ID = "potId";
 
     // FOREIGN KEY FOR LAST_WATERED & MOISTURE_LEVEL
     private static final String FK_CONSTRAINT_PLANTS = "fk_plants";
@@ -61,6 +64,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COL_PLANT_PHYLO + " TEXT,"
                 + COL_PLANT_BIRTH_DATE + " DATETIME,"
                 + COL_PLANT_NOTES + " TEXT,"
+                + COL_PLANT_IMAGE + " TEXT,"
+                + COL_PLANT_POT_ID + " TEXT,"
                 + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now'))"
                 + ");";
 
@@ -116,9 +121,11 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_PLANT_NAME, plant.getName());
         cv.put(COL_PLANT_PHYLO, plant.getPhylogeny());
-        cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
+        if(plant.getBirthDate() != null) {
+            cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
+        }
         cv.put(COL_PLANT_NOTES, plant.getNotes());
-        long id = db.insert(TABLE_PLANTS, null, cv);
+        long id = db.insert(TABLE_PLANTS, COL_PLANT_BIRTH_DATE, cv);
 
         db.close();
 
@@ -131,7 +138,9 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_PLANT_NAME, plant.getName());
         cv.put(COL_PLANT_PHYLO, plant.getPhylogeny());
-        cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
+        if(plant.getBirthDate() != null) {
+            cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
+        }
         cv.put(COL_PLANT_NOTES, plant.getNotes());
 
         db.update(TABLE_PLANTS, cv, COL_ID + " = ?", new String[] {String.valueOf(plant.getId())});
@@ -153,7 +162,8 @@ public class DBHandler extends SQLiteOpenHelper {
             long id = c.getLong(c.getColumnIndex(COL_ID));
             String name = c.getString(c.getColumnIndex(COL_PLANT_NAME));
             String phylogeny = c.getString(c.getColumnIndex(COL_PLANT_PHYLO));
-            Date birthDate = new Date(c.getLong(c.getColumnIndex(COL_PLANT_BIRTH_DATE)));
+            long date = c.getLong(c.getColumnIndex(COL_PLANT_BIRTH_DATE));
+            Date birthDate = date == 0 ? null : new Date(date);
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
             Date lastWatered = getMostRecentLastWateredValue(id);
             int moistureLevel = getMostRecentMoistureValue(id);
@@ -212,7 +222,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void deletePlant(long id) {
         SQLiteDatabase db = getWritableDatabase();
 
-        db.execSQL("DELETE FROM " + TABLE_PLANTS + " WHERE " + COL_ID + " = " + id + ");");
+        db.execSQL("DELETE FROM " + TABLE_PLANTS + " WHERE " + COL_ID + " = " + id);
         db.close();
     }
 

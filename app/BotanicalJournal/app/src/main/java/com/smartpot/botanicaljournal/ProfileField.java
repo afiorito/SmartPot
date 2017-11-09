@@ -6,10 +6,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import static com.smartpot.botanicaljournal.DisplayMode.READ_ONLY;
 
 import com.smartpot.botanicaljournal.R;
+
+import java.lang.reflect.Type;
 
 
 public class ProfileField extends LinearLayout{
@@ -40,6 +44,7 @@ public class ProfileField extends LinearLayout{
     private int labelTextSize;
     private int textColor;
     private int textSize;
+    private boolean isItalic;
     private Drawable background;
 
     public ProfileField(Context context) {
@@ -62,6 +67,7 @@ public class ProfileField extends LinearLayout{
         textColor = a.getColor(R.styleable.ProfileField_textColor, 0);
         textSize = a.getDimensionPixelSize(R.styleable.ProfileField_textSize, 0);
         background = a.getDrawable(R.styleable.ProfileField_background);
+        isItalic = a.getBoolean(R.styleable.ProfileField_isItalic, false);
 
         init(context);
         a.recycle();
@@ -100,6 +106,7 @@ public class ProfileField extends LinearLayout{
         fieldEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         fieldEditText.setOnEditorActionListener(editorListener);
         fieldEditText.addTextChangedListener(fieldWatcher);
+        fieldEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         fieldTextView = new TextView(context);
         fieldTextView.setPadding(0, 0, fieldEditText.getPaddingRight(), 0);
@@ -107,6 +114,11 @@ public class ProfileField extends LinearLayout{
         fieldTextView.setTextColor(textColor);
         fieldTextView.setBackground(background);
         fieldTextView.setText(text);
+
+        if(isItalic) {
+            fieldEditText.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL), Typeface.ITALIC);
+            fieldTextView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL), Typeface.ITALIC);
+        }
 
         // READ_ONLY MODE by default
         addView(fieldLabel);

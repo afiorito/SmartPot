@@ -20,4 +20,6 @@
     <string name="plantTypeText">Type Species</string>
     <string name="addNotesText">Add Notes</string>
     <string name="borderDesc">Bottom Grey Border</string>
+    <string name="pot_id_label">Pot ID:</string>
+    <string name="pot_id_hint">xxx-xxx-xx</string>
 </resources>

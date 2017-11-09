@@ -1,6 +1,7 @@
 package com.smartpot.botanicaljournal;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -12,11 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PlantFragment extends Fragment {
+
+    private DBHandler handler;
+
     public static PlantFragment newInstance() {
-        PlantFragment fragment = new PlantFragment();
-        return fragment;
+        return new PlantFragment();
     }
 
     @Override
@@ -30,13 +34,14 @@ public class PlantFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_plant, container, false);
 
-        // Create temporary plants
-        ArrayList<Plant> plants = new ArrayList<>();
-        for (int i = 1; i <= 5 ; i++){
-            plants.add(new Plant("Plant " + i));
-        }
+        // Initialize Database Controller
+        handler = new DBHandler(getContext());
 
-        //Create plant adapter
+        // Load plants from the database
+        ArrayList<Plant> plants = handler.getPlants();
+//        plants.add(new Plant(0, "Scammy", "Scammer", new Date(), "", new Date(), 0));
+
+        // Create plant adapter
         PlantAdapter plantAdapter = new PlantAdapter(getContext(), plants);
 
         //Get reference to ListView
@@ -50,6 +55,8 @@ public class PlantFragment extends Fragment {
         //Set OnClickListener to ListView Item
         plantView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id){
+                NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                navigationView.getMenu().getItem(0).setChecked(false);
                 Plant plant = (Plant)parent.getAdapter().getItem(position);
                 AddPlantFragment addPlantFragment= AddPlantFragment.newInstance(PlantViewState.VIEWPLANT);
                 addPlantFragment.setPlant(plant);
@@ -64,8 +71,12 @@ public class PlantFragment extends Fragment {
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
+                        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                        navigationView.getMenu().getItem(1).setChecked(true);
+                        AddPlantFragment addPlantFragment = AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
+                        addPlantFragment.setPlant(new Plant());
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, AddPlantFragment.newInstance(PlantViewState.ADDPLANT)).addToBackStack(null).commit();
+                        transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
                     }
                 }
         );

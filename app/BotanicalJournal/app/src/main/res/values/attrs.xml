@@ -9,5 +9,6 @@
         <attr name="textSize" format="dimension" />
         <attr name="background" format="reference" />
         <attr name="height" format="dimension"/>
+        <attr name="isItalic" format="boolean" />
     </declare-styleable>
 </resources>

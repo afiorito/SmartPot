@@ -1,6 +1,5 @@
 package com.smartpot.botanicaljournal;
 
-import android.app.DialogFragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -30,6 +28,7 @@ public class NavigationActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Display the main fragment
@@ -57,7 +56,7 @@ public class NavigationActivity extends AppCompatActivity
         if (id == R.id.myPlants)
             transaction.replace(R.id.frame_layout, PlantFragment.newInstance()).commit();
         else if (id == R.id.addPlant) {
-            AddPlantFragment addPlantFragment= AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
+            AddPlantFragment addPlantFragment = AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
             addPlantFragment.setPlant(new Plant());
             transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
         }

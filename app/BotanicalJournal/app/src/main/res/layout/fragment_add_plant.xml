@@ -55,8 +55,6 @@
                     android:id="@+id/addImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentBottom="false"
-                    android:layout_alignParentTop="true"
                     android:src="@drawable/profile_pic_low"
                     android:visibility="gone" />
             </FrameLayout>
@@ -80,7 +78,7 @@
                     custom:textSize="26sp" />
 
                 <com.smartpot.botanicaljournal.ProfileField
-                    android:id="@+id/plantType"
+                    android:id="@+id/plantPhylogeny"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="false"
@@ -88,7 +86,8 @@
                     android:layout_centerVertical="true"
                     custom:hintText="@string/plantTypeText"
                     custom:textColor="@color/colorPrimaryDark"
-                    custom:textSize="16sp" />
+                    custom:textSize="16sp"
+                    custom:isItalic="true" />
 
 
             </RelativeLayout>
@@ -100,7 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="0dp"
             android:orientation="vertical"
             android:paddingEnd="16dp"
             android:paddingStart="16dp">
@@ -109,7 +108,7 @@
                 android:id="@+id/moistureLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -156,7 +155,7 @@
                 android:id="@+id/lastWateredLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -165,6 +164,7 @@
                     android:layout_height="1dp"
                     android:layout_below="@+id/lastWateredLabel"
                     android:contentDescription="@string/borderDesc"
+                    android:elevation="0dp"
                     android:src="@color/colorDarkAccent" />
 
                 <ImageView
@@ -179,6 +179,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@+id/timeIcon"
+                    android:layout_toStartOf="@+id/updateLastWateredButton"
                     android:includeFontPadding="false"
                     android:text="@string/lastWateredText"
                     android:textColor="@color/colorDarkAccent"
@@ -192,8 +193,27 @@
                     android:layout_alignParentEnd="false"
                     android:layout_below="@+id/border3"
                     android:layout_centerVertical="true"
+                    android:elevation="0dp"
                     custom:textColor="@color/hintColor"
                     custom:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/updateLastWateredButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/border3"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@null"
+                    android:elevation="0dp"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:padding="0dp"
+                    android:text="Update"
+                    android:textAlignment="center"
+                    android:textColor="#0071A7"
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 
@@ -201,8 +221,17 @@
                 android:id="@+id/bDayLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/cancelButton"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/border4"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_cancel" />
 
                 <ImageView
                     android:id="@+id/border4"
@@ -234,7 +263,9 @@
                     android:id="@+id/bDay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
                     android:layout_below="@+id/border4"
+                    android:layout_toStartOf="@+id/cancelButton"
                     android:inputType="none"
                     android:text="@string/bDayValue"
                     android:textColor="@color/hintColor"
@@ -245,7 +276,7 @@
                 android:id="@+id/notesLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -287,9 +318,59 @@
                     android:maxLength="2000"
                     android:maxLines="2147483647"
                     android:minHeight="70dp"
-                    android:textSize="18sp" />
+                    android:paddingBottom="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/hintColor"
+                    android:textSize="16sp" />
 
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/potIdLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorLightBackground"
+                android:padding="2dp">
+
+                <EditText
+                    android:id="@+id/potIdEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@+id/potIdLabel"
+                    android:background="@null"
+                    android:ems="10"
+                    android:hint="@string/pot_id_hint"
+                    android:inputType="textPersonName"
+                    android:padding="0dp"
+                    android:paddingBottom="0dp"
+                    android:textColor="#9B9B9B"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/potIdLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pot_id_label"
+                    android:textColor="@color/colorDarkAccent"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/deletePlantButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/colorAccent"
+                android:text="Delete"
+                android:textColor="#9b9b9b" />
 
         </LinearLayout>
 
