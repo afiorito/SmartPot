@@ -2,7 +2,7 @@
     <string name="app_name">Botanical Journal</string>
     <string name="createButtonText">Create A Plant</string>
     <string name="noPlantsText">You have no plants.</string>
-    <string name="lastWatered">Last Watered</string>
+    <string name="lastWateredText">Last Watered</string>
     <string name="moistureLevelText">Moisture Level</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -10,6 +10,14 @@
 
     <string name="action_settings">Settings</string>
     <string name="plant_image_content_description">Plant Image</string>
-    <string name="plant_name">Plant Name</string>
-    <string name="last_watered_time">5 hours ago</string>
+    <string name="lastWateredValue">5 hours ago</string>
+    <string name="plantImageDesc">Plant Image</string>
+    <string name="backImageDesc">Light Blue Background Color</string>
+    <string name="bDayText">Birthday</string>
+    <string name="bDayValue">Enter Birthday</string>
+    <string name="notesText">Notes</string>
+    <string name="plantNameText">Plant Name</string>
+    <string name="plantTypeText">Type Species</string>
+    <string name="addNotesText">Add Notes</string>
+    <string name="borderDesc">Bottom Grey Border</string>
 </resources>

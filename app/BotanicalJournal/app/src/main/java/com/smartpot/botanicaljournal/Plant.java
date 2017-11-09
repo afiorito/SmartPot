@@ -1,7 +1,6 @@
 package com.smartpot.botanicaljournal;
 
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Created by MG on 2017-10-21.
@@ -10,6 +9,7 @@ import java.util.Random;
 public class Plant {
 
     private long id;
+    private String potId = "";
     private String name;
     private String phylogeny;
     private Date birthDate;
@@ -19,6 +19,9 @@ public class Plant {
     private String imagePath;
 
 
+    Plant() {
+
+    }
 
     Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel) {
         this.id = id;
@@ -44,36 +47,65 @@ public class Plant {
     public long getId() {
         return id;
     }
+    public String getImagePath() {
+        return imagePath;
+    }
+    public String getName() {
+        return name;
+    }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+    public String getNotes() {
+        return notes;
+    }
+    public Date getLastWatered() {
+        return lastWatered;
+    }
+    public int getMoistureLevel() {
+        return moistureLevel;
+    }
+    public String getPhylogeny() {
+        return phylogeny;
+    }
+    public String getPotId() {
+        return potId;
+    }
+
+
+    public void setPotId(String potId) {
+        this.potId = potId;
+    }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public void setPhylogeny(String phylogeny) {
+        this.phylogeny = phylogeny;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public Date getLastWatered() {
-        return lastWatered;
+    public void setLastWatered(Date lastWatered) {
+        this.lastWatered = lastWatered;
     }
 
-    public int getMoistureLevel() {
-        return moistureLevel;
+    public void setMoistureLevel(int moistureLevel) {
+        this.moistureLevel = moistureLevel;
     }
 
-    public String getPhylogeny() {
-        return phylogeny;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

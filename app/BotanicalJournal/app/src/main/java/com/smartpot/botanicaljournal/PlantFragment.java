@@ -2,9 +2,11 @@ package com.smartpot.botanicaljournal;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,18 +47,25 @@ public class PlantFragment extends Fragment {
         plantView.setEmptyView(noPlantsView); // Set default layout when list is empty
         plantView.setAdapter(plantAdapter);
 
+        //Set OnClickListener to ListView Item
+        plantView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView parent, View v, int position, long id){
+                Plant plant = (Plant)parent.getAdapter().getItem(position);
+                AddPlantFragment addPlantFragment= AddPlantFragment.newInstance(PlantViewState.VIEWPLANT);
+                addPlantFragment.setPlant(plant);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
+            }
+        });
+
         // Replace main fragment with add plant fragment when button is clicked
-        Button addPlantButton = (Button) view.findViewById(R.id.addPlantButton);
+        Button addPlantButton = view.findViewById(R.id.addPlantButton);
         addPlantButton.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View v){
-                        AddPlantFragment nextFrag= new AddPlantFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.frame_layout, nextFrag,"findThisFragment")
-                                .addToBackStack(null)
-                                .commit();
-
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, AddPlantFragment.newInstance(PlantViewState.ADDPLANT)).addToBackStack(null).commit();
                     }
                 }
         );

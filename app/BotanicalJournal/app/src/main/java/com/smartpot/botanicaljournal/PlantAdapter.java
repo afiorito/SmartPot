@@ -38,11 +38,13 @@ public class PlantAdapter extends ArrayAdapter {
         TextView plantNameTextView = plantRow.findViewById(R.id.plantName);
         ImageView plantImage = plantRow.findViewById(R.id.plantImage);
         ProgressBar progressBar = plantRow.findViewById(R.id.progressBar);
+        //ProfileField lastWateredText = plantRow.findViewById(R.id.lastWatered);
 
         // Set layout elements
         plantNameTextView.setText(plantName);
         plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower));
         progressBar.setProgress(moisture);
+        //lastWateredText.setText("5 hours ago");
 
         return plantRow;
     }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProfileField">
+        <attr name="hintText" format="string" />
+        <attr name="labelText" format="string" />
+        <attr name="labelColor" format="color" />
+        <attr name="labelTextSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="textSize" format="dimension" />
+        <attr name="background" format="reference" />
+        <attr name="height" format="dimension"/>
+    </declare-styleable>
+</resources>
