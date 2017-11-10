@@ -34,7 +34,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,6 +69,7 @@ public class AddPlantFragment extends Fragment {
     private ImageButton cancelButton;
     private Button updateLastWateredButton;
     private Button deletePlantButton;
+    private ProgressBar loadingBar;
 
 
     // References to layouts
@@ -87,6 +91,7 @@ public class AddPlantFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         pc = new PlantController(getContext());
+        Log.i("TAG", "POTIDDD " + plant.getPotId());
     }
 
     @Override
@@ -121,6 +126,8 @@ public class AddPlantFragment extends Fragment {
         cancelButton = view.findViewById(R.id.cancelButton);
         updateLastWateredButton = view.findViewById(R.id.updateLastWateredButton);
         deletePlantButton = view.findViewById(R.id.deletePlantButton);
+        loadingBar = view.findViewById(R.id.loadingBar);
+        loadingBar.setVisibility(View.GONE);
 
         cancelButton.setOnClickListener(clearDate);
         updateLastWateredButton.setOnClickListener(updateLastWatered);
@@ -155,6 +162,11 @@ public class AddPlantFragment extends Fragment {
                 moistureLayout.setVisibility(View.GONE);
                 lastWateredLayout.setVisibility(View.GONE);
 
+                if(!pc.isNetworkAvailable()) {
+                    potIdEditText.setText("No Internet Connection");
+                    potIdEditText.setEnabled(false);
+                }
+
                 break;
 
             case EDITPLANT:
@@ -165,6 +177,11 @@ public class AddPlantFragment extends Fragment {
                 addImage.setVisibility(View.VISIBLE);
                 bDayLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.VISIBLE);
+
+                if(!pc.isNetworkAvailable()) {
+                    potIdEditText.setText("No Internet Connection");
+                    potIdEditText.setEnabled(false);
+                }
 
                 if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
                 else moistureLayout.setVisibility(View.VISIBLE);
@@ -209,34 +226,32 @@ public class AddPlantFragment extends Fragment {
             case R.id.set_editing:
                 switch(plantViewState){
                     case ADDPLANT: //addImage should be gone
-                        updatePlantValues();
-                        if(pc.createPlant(plant)) {
-                            NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
-                            navigationView.getMenu().getItem(1).setChecked(false);
-                            plantViewState = plantViewState.VIEWPLANT;
-                        }
-                        break;
-
                     case EDITPLANT:
-                        updatePlantValues();
-                        if (pc.updatePlant(plant)) {
-                            plantViewState = plantViewState.VIEWPLANT;
-                        }
+                        final String potId = potIdEditText.getText().toString();
+                        loadingBar.setVisibility(View.VISIBLE);
+                        pc.isValidSmartPot(potId, new VolleyCallback() {
+                            @Override
+                            public void onResponse(boolean success) {
+                                Log.i("TAG", "Success: " + success + " " + potId);
+                                if(success) plant.setPotId(potId);
+                                else {
+                                    Toast.makeText(getContext(), "Pot ID is not valid.", Toast.LENGTH_LONG).show();
+                                    plant.setPotId("");
+                                }
+                                loadingBar.setVisibility(View.GONE);
+                                performPlantOperation();
+                                updateDisplayMode();
+
+                            }
+                        });
                         break;
 
                     case VIEWPLANT:
                         plantViewState = plantViewState.EDITPLANT;
+                        updateDisplayMode();
                         break;
 
                 }
-                if (displayMode == DisplayMode.WRITE)
-                    menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
-                else
-                    menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
-
-                setDisplayMode();
-                setAllFieldModes(displayMode);
-
 
                 return true;
 
@@ -246,11 +261,39 @@ public class AddPlantFragment extends Fragment {
         }
     }
 
+    private void updateDisplayMode() {
+        if (displayMode == DisplayMode.WRITE)
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
+        else
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_done));
+
+        setDisplayMode();
+        setAllFieldModes(displayMode);
+    }
+
+    private void performPlantOperation() {
+        updatePlantValues();
+        switch(plantViewState) {
+            case ADDPLANT:
+                if(pc.createPlant(plant)) {
+                    NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                    navigationView.getMenu().getItem(1).setChecked(false);
+                    plantViewState = plantViewState.VIEWPLANT;
+                }
+                break;
+            case EDITPLANT:
+                if (pc.updatePlant(plant)) {
+                    plantViewState = plantViewState.VIEWPLANT;
+                }
+                break;
+        }
+    }
+
     private void updatePlantValues() {
         plant.setName(plantNameField.getText());
         plant.setPhylogeny(plantPhylogenyField.getText());
         plant.setNotes(notesEditText.getText().toString());
-        plant.setPotId(potIdEditText.getText().toString());
+
     }
 
     public void setDate(Date date) {
@@ -353,8 +396,7 @@ public class AddPlantFragment extends Fragment {
         notesEditText.setText(plant.getNotes());
         potIdEditText.setText(plant.getPotId());
         if (!plant.getImagePath().isEmpty()){
-            Bitmap bitmap = BitmapFactory.decodeFile(plant.getImagePath());
-            plantImage.setImageBitmap(bitmap);
+            Picasso.with(getContext()).load(new File(plant.getImagePath())).into(plantImage);
         }
         else
             plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower)); //set flower by default
@@ -366,60 +408,36 @@ public class AddPlantFragment extends Fragment {
 
 
     //_______________________________TO TAKE AND SAVE PLANT PICTURE (move elsewhere?)___________________
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
-        Log.d("MainActivity", "called dispatchTakePictureIntent");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(getContext(), "com.smartpot.botanicaljournal.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
     // Called after image was taken from camera
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            addPhotoToGallery();
-            Bitmap bitmap = BitmapFactory.decodeFile(plant.getImagePath());
-            plantImage.setImageBitmap(bitmap);
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            String imageFileName = "IMG_" + timeStamp;
+            File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            Bundle extras = data.getExtras();
+            Bitmap thumbnail = (Bitmap) extras.get("data");
+            plantImage.setImageBitmap(thumbnail);
+            try {
+                File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+                FileOutputStream out = new FileOutputStream(imageFile);
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+                plant.setImagePath(imageFile.getAbsolutePath());
+                Log.i("TAG", plant.getImagePath());
+            } catch (Exception e) {}
+
         }
     }
-
-    // Create an image file name
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
-
-        // Save file path
-        String mCurrentPhotoPath = imageFile.getAbsolutePath();
-        plant.setImagePath(imageFile.getAbsolutePath());
-        Log.d ("YEEEEEE", mCurrentPhotoPath);
-        return imageFile;
-    }
-
-    //Add the picture to the photo gallery. Must be called on all camera images or they will disappear once taken.
-    protected void addPhotoToGallery() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(plant.getImagePath());
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
-    }
-
 
 }

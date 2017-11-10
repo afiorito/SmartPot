@@ -3,6 +3,7 @@ package com.smartpot.botanicaljournal;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -19,39 +23,43 @@ import java.util.ArrayList;
 
 public class PlantAdapter extends ArrayAdapter {
 
+    Context context;
 
     PlantAdapter(Context context, ArrayList<Plant> plants){
         super(context, R.layout.plant_row, plants);
+        this.context = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        View plantRow = inflater.inflate(R.layout.plant_row, parent, false);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.plant_row, parent, false);
+        }
+
+        Plant plant = (Plant)getItem(position);
 
         //Get plant info
-        String plantName = ((Plant)getItem(position)).getName();
-        int moisture = ((Plant)getItem(position)).getMoistureLevel();
-        String imagePath = ((Plant)getItem(position)).getImagePath();
+        String plantName = plant.getName();
+        int moisture = plant.getMoistureLevel();
+        String imagePath = plant.getImagePath();
 
         // Get reference to layout elements
-        TextView plantNameTextView = plantRow.findViewById(R.id.plantName);
-        ImageView plantImage = plantRow.findViewById(R.id.plantImage);
-        ProgressBar progressBar = plantRow.findViewById(R.id.progressBar);
+        TextView plantNameTextView = convertView.findViewById(R.id.plantName);
+        ImageView plantImage = convertView.findViewById(R.id.plantImage);
+        ProgressBar progressBar = convertView.findViewById(R.id.progressBar);
 
         // Set layout elements
         plantNameTextView.setText(plantName);
-        plantNameTextView.setText(plantName);
+
         if (imagePath.isEmpty()){
-            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower));
+            Picasso.with(context).load(R.drawable.flower).into(plantImage);
         } else {
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-            plantImage.setImageBitmap(bitmap);
+            Picasso.with(context).load(new File(plant.getImagePath())).into(plantImage);
         }
         progressBar.setProgress(moisture);
 
-        return plantRow;
+        return convertView;
     }
 }
