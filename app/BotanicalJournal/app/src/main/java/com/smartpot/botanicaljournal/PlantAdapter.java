@@ -1,8 +1,6 @@
 package com.smartpot.botanicaljournal;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,17 +46,24 @@ public class PlantAdapter extends ArrayAdapter {
         // Get reference to layout elements
         TextView plantNameTextView = convertView.findViewById(R.id.plantName);
         ImageView plantImage = convertView.findViewById(R.id.plantImage);
-        ProgressBar progressBar = convertView.findViewById(R.id.progressBar);
+        TextView levelText = convertView.findViewById(R.id.levelText);
+        TextView lastWateredValue = convertView.findViewById(R.id.lastWateredValue);
+        ProgressBar moistureBar = convertView.findViewById(R.id.moistureBar);
+        if(plant.getPotId().equals("")) {
+            levelText.setVisibility(View.INVISIBLE);
+            moistureBar.setVisibility(View.INVISIBLE);
+        }
 
         // Set layout elements
         plantNameTextView.setText(plantName);
+        lastWateredValue.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
 
         if (imagePath.isEmpty()){
-            Picasso.with(context).load(R.drawable.flower).into(plantImage);
+            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.ic_plant_profile));
         } else {
             Picasso.with(context).load(new File(plant.getImagePath())).into(plantImage);
         }
-        progressBar.setProgress(moisture);
+        moistureBar.setProgress(moisture);
 
         return convertView;
     }

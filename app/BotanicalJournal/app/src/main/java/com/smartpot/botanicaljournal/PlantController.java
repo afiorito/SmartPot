@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -53,10 +54,9 @@ public class PlantController {
                             } else {
                                 callback.onResponse(false);
                             }
-                            Log.i("TAG", "potId: " + response.get("potId"));
                         } catch (Exception e) {
                             // change this to true if you want potId to be valid
-                            callback.onResponse(false);
+                            callback.onResponse(true);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -95,6 +95,10 @@ public class PlantController {
 
     public boolean deletePlant(Plant plant) {
 
+        File image = new File(plant.getImagePath());
+        if(image.exists()) {
+            image.delete();
+        }
         handler.deletePlant(plant.getId());
 
         return true;

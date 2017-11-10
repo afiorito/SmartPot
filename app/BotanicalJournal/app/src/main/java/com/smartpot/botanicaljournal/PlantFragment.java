@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ public class PlantFragment extends Fragment {
     public static PlantFragment newInstance() {
         return new PlantFragment();
     }
+
+    private SwipeRefreshLayout refreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,19 @@ public class PlantFragment extends Fragment {
 
         // Create plant adapter
         PlantAdapter plantAdapter = new PlantAdapter(getContext(), plants);
+
+        refreshLayout = view.findViewById(R.id.refreshLayout);
+        refreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("TAG", "onRefresh called from SwipeRefreshLayout");
+
+                        // Update plant data here
+                        refreshLayout.setRefreshing(false);
+                    }
+                }
+        );
 
         //Get reference to ListView
         ListView plantView = view.findViewById(R.id.plantListView);

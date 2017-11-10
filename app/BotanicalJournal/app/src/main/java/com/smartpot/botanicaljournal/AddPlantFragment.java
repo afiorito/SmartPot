@@ -1,20 +1,13 @@
 package com.smartpot.botanicaljournal;
 
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.format.DateUtils;
@@ -38,10 +31,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -116,7 +107,7 @@ public class AddPlantFragment extends Fragment {
 
         plantNameField = view.findViewById(R.id.plantName);
         plantPhylogenyField = view.findViewById(R.id.plantPhylogeny);
-        progressBar = view.findViewById(R.id.progressBar);
+        progressBar = view.findViewById(R.id.moistureBar);
         lastWateredField = view.findViewById(R.id.lastWatered);
         notesEditText = view.findViewById(R.id.notesEditText);
         potIdEditText = view.findViewById(R.id.potIdEditText);
@@ -171,7 +162,7 @@ public class AddPlantFragment extends Fragment {
 
             case EDITPLANT:
                 displayMode = DisplayMode.WRITE;
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Editing " + plant.getName());
+//                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Editing " + plant.getName());
 
 
                 addImage.setVisibility(View.VISIBLE);
@@ -232,7 +223,6 @@ public class AddPlantFragment extends Fragment {
                         pc.isValidSmartPot(potId, new VolleyCallback() {
                             @Override
                             public void onResponse(boolean success) {
-                                Log.i("TAG", "Success: " + success + " " + potId);
                                 if(success) plant.setPotId(potId);
                                 else {
                                     Toast.makeText(getContext(), "Pot ID is not valid.", Toast.LENGTH_LONG).show();
@@ -312,31 +302,6 @@ public class AddPlantFragment extends Fragment {
         return "";
     }
 
-    private String formatLastWateredTime(Date lastWatered) {
-        if(lastWatered == null) return "Never";
-        long time = new Date(lastWatered.getTime()).getTime();
-        long now = System.currentTimeMillis();
-
-        long difference = now - time;
-
-        CharSequence ago;
-
-        // if difference is greater than a year
-        if (difference > 32659200000L)
-            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR);
-
-        // if difference is greater than a week
-        else if (difference > 604800000L)
-            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE);
-
-        else
-            ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
-
-        return ago.toString();
-    }
-
     ImageButton.OnClickListener clearDate = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -392,14 +357,14 @@ public class AddPlantFragment extends Fragment {
         progressBar.setProgress(plant.getMoistureLevel());
         String date = formatDate(plant.getBirthDate());
         bDayField.setText(date.equals("") ? "Enter Birthday" : date);
-        lastWateredField.setText(formatLastWateredTime(plant.getLastWatered()));
+        lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
         notesEditText.setText(plant.getNotes());
         potIdEditText.setText(plant.getPotId());
         if (!plant.getImagePath().isEmpty()){
             Picasso.with(getContext()).load(new File(plant.getImagePath())).into(plantImage);
         }
         else
-            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower)); //set flower by default
+            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.ic_plant_profile)); //set flower by default
     }
 
     public void setPlant(Plant plant){
@@ -429,6 +394,10 @@ public class AddPlantFragment extends Fragment {
             plantImage.setImageBitmap(thumbnail);
             try {
                 File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+                File oldImage = new File(plant.getImagePath());
+                if(oldImage.exists()) {
+                    oldImage.delete();
+                }
                 FileOutputStream out = new FileOutputStream(imageFile);
                 thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, out);
                 out.flush();
