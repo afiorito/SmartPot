@@ -20,10 +20,10 @@ public class Plant {
 
 
     Plant() {
-
+        this.imagePath = "";
     }
 
-    Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel) {
+    Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel, String imagePath, String potId) {
         this.id = id;
         this.name = name;
         this.phylogeny = phylogeny;
@@ -31,6 +31,14 @@ public class Plant {
         this.notes = notes;
         this.lastWatered = lastWatered;
         this.moistureLevel = moistureLevel;
+        if (potId == null)
+            this.potId = "";
+        else
+            this.potId = potId;
+        if (imagePath == null)
+            this.imagePath = "";
+        else
+            this.imagePath = imagePath;
     }
 
     Plant(String name, String phylogeny, Date birthDate, String notes) {

@@ -1,11 +1,12 @@
 package com.smartpot.botanicaljournal;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -33,18 +34,23 @@ public class PlantAdapter extends ArrayAdapter {
         //Get plant info
         String plantName = ((Plant)getItem(position)).getName();
         int moisture = ((Plant)getItem(position)).getMoistureLevel();
+        String imagePath = ((Plant)getItem(position)).getImagePath();
 
         // Get reference to layout elements
         TextView plantNameTextView = plantRow.findViewById(R.id.plantName);
         ImageView plantImage = plantRow.findViewById(R.id.plantImage);
         ProgressBar progressBar = plantRow.findViewById(R.id.progressBar);
-        //ProfileField lastWateredText = plantRow.findViewById(R.id.lastWatered);
 
         // Set layout elements
         plantNameTextView.setText(plantName);
-        plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower));
+        plantNameTextView.setText(plantName);
+        if (imagePath.isEmpty()){
+            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower));
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            plantImage.setImageBitmap(bitmap);
+        }
         progressBar.setProgress(moisture);
-        //lastWateredText.setText("5 hours ago");
 
         return plantRow;
     }

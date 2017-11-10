@@ -1,5 +1,6 @@
 package com.smartpot.botanicaljournal;
 
+import android.app.ActionBar;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -53,14 +54,17 @@ public class NavigationActivity extends AppCompatActivity
         int id = item.getItemId();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (id == R.id.myPlants)
+        if (id == R.id.myPlants){
+            getSupportActionBar().setTitle(R.string.app_name);
             transaction.replace(R.id.frame_layout, PlantFragment.newInstance()).commit();
+        }
         else if (id == R.id.addPlant) {
             AddPlantFragment addPlantFragment = AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
             addPlantFragment.setPlant(new Plant());
             transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
         }
         else if (id == R.id.settings) {
+            getSupportActionBar().setTitle("Settings");
             transaction.replace(R.id.frame_layout, SettingsFragment.newInstance()).addToBackStack(null).commit();
         }
 

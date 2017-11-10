@@ -1,10 +1,20 @@
 package com.smartpot.botanicaljournal;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.format.DateUtils;
@@ -22,10 +32,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static android.app.Activity.RESULT_OK;
 
 public class AddPlantFragment extends Fragment {
 
@@ -110,6 +125,7 @@ public class AddPlantFragment extends Fragment {
         cancelButton.setOnClickListener(clearDate);
         updateLastWateredButton.setOnClickListener(updateLastWatered);
         deletePlantButton.setOnClickListener(deletePlant);
+
         // Set OnClickListener to birthday view
         bDayField.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -117,6 +133,14 @@ public class AddPlantFragment extends Fragment {
                 AppCompatDialogFragment newFragment = new DatePickerFragment();
                 newFragment.setTargetFragment(AddPlantFragment.this, 0);
                 newFragment.show(getActivity().getSupportFragmentManager(),"Date Picker");
+            }}
+        );
+
+        // Set OnClickListener to Add Image
+        plantImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                dispatchTakePictureIntent();
             }}
         );
     }
@@ -161,9 +185,7 @@ public class AddPlantFragment extends Fragment {
                 if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
                 else moistureLayout.setVisibility(View.VISIBLE);
 
-
-
-                addImage.setVisibility(View.INVISIBLE);
+                addImage.setVisibility(View.GONE);
 
                 break;
         }
@@ -215,6 +237,7 @@ public class AddPlantFragment extends Fragment {
                 setDisplayMode();
                 setAllFieldModes(displayMode);
 
+
                 return true;
 
             default:
@@ -227,7 +250,6 @@ public class AddPlantFragment extends Fragment {
         plant.setName(plantNameField.getText());
         plant.setPhylogeny(plantPhylogenyField.getText());
         plant.setNotes(notesEditText.getText().toString());
-        plant.setImagePath("");
         plant.setPotId(potIdEditText.getText().toString());
     }
 
@@ -269,8 +291,6 @@ public class AddPlantFragment extends Fragment {
         else
             ago = DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS);
 
-
-
         return ago.toString();
     }
 
@@ -309,10 +329,12 @@ public class AddPlantFragment extends Fragment {
         plantPhylogenyField.setDisplayMode(mode);
         if (displayMode == DisplayMode.READ_ONLY) {
             bDayField.setClickable(false);
+            plantImage.setClickable(false);
             notesEditText.setFocusableInTouchMode(false);
             notesEditText.setFocusable(false);
         }else{
             bDayField.setClickable(true);
+            plantImage.setClickable(true);
             notesEditText.setFocusableInTouchMode(true);
             notesEditText.setFocusable(true);
             notesEditText.clearFocus();
@@ -321,9 +343,7 @@ public class AddPlantFragment extends Fragment {
 
     // Set the values for the profile fields
     private void setFieldValues(){
-        plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower)); //CHANGE THIS TO PLANT IMG
-
-        //ADD CHECK FOR EMPTY NAME
+           //ADD CHECK FOR EMPTY NAME
         plantNameField.setText(plant.getName());
         plantPhylogenyField.setText(plant.getPhylogeny());
         progressBar.setProgress(plant.getMoistureLevel());
@@ -332,11 +352,74 @@ public class AddPlantFragment extends Fragment {
         lastWateredField.setText(formatLastWateredTime(plant.getLastWatered()));
         notesEditText.setText(plant.getNotes());
         potIdEditText.setText(plant.getPotId());
-
+        if (!plant.getImagePath().isEmpty()){
+            Bitmap bitmap = BitmapFactory.decodeFile(plant.getImagePath());
+            plantImage.setImageBitmap(bitmap);
+        }
+        else
+            plantImage.setImageDrawable(getContext().getDrawable(R.drawable.flower)); //set flower by default
     }
 
     public void setPlant(Plant plant){
         this.plant = plant;
     }
+
+
+    //_______________________________TO TAKE AND SAVE PLANT PICTURE (move elsewhere?)___________________
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private void dispatchTakePictureIntent() {
+        Log.d("MainActivity", "called dispatchTakePictureIntent");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(), "com.smartpot.botanicaljournal.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    // Called after image was taken from camera
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            addPhotoToGallery();
+            Bitmap bitmap = BitmapFactory.decodeFile(plant.getImagePath());
+            plantImage.setImageBitmap(bitmap);
+        }
+    }
+
+    // Create an image file name
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        // Save file path
+        String mCurrentPhotoPath = imageFile.getAbsolutePath();
+        plant.setImagePath(imageFile.getAbsolutePath());
+        Log.d ("YEEEEEE", mCurrentPhotoPath);
+        return imageFile;
+    }
+
+    //Add the picture to the photo gallery. Must be called on all camera images or they will disappear once taken.
+    protected void addPhotoToGallery() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(plant.getImagePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
+    }
+
 
 }

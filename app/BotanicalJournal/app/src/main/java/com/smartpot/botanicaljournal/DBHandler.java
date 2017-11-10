@@ -121,10 +121,12 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_PLANT_NAME, plant.getName());
         cv.put(COL_PLANT_PHYLO, plant.getPhylogeny());
+        cv.put(COL_PLANT_IMAGE, plant.getImagePath());
         if(plant.getBirthDate() != null) {
             cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
         }
         cv.put(COL_PLANT_NOTES, plant.getNotes());
+        cv.put(COL_PLANT_POT_ID, plant.getPotId());
         long id = db.insert(TABLE_PLANTS, COL_PLANT_BIRTH_DATE, cv);
 
         db.close();
@@ -138,10 +140,12 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_PLANT_NAME, plant.getName());
         cv.put(COL_PLANT_PHYLO, plant.getPhylogeny());
+        cv.put(COL_PLANT_IMAGE, plant.getImagePath());
         if(plant.getBirthDate() != null) {
             cv.put(COL_PLANT_BIRTH_DATE, plant.getBirthDate().getTime());
         }
         cv.put(COL_PLANT_NOTES, plant.getNotes());
+        cv.put(COL_PLANT_POT_ID, plant.getPotId());
 
         db.update(TABLE_PLANTS, cv, COL_ID + " = ?", new String[] {String.valueOf(plant.getId())});
     }
@@ -167,7 +171,9 @@ public class DBHandler extends SQLiteOpenHelper {
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
             Date lastWatered = getMostRecentLastWateredValue(id);
             int moistureLevel = getMostRecentMoistureValue(id);
-            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel));
+            String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
+            String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
+            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel, imagePath, potId));
             c.moveToNext();
         }
         c.close();
