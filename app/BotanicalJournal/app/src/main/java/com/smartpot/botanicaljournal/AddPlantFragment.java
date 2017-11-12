@@ -150,6 +150,7 @@ public class AddPlantFragment extends Fragment {
 
                 moistureLayout.setVisibility(View.GONE);
                 lastWateredLayout.setVisibility(View.GONE);
+                deletePlantButton.setVisibility(View.GONE);
 
                 if(!pc.isNetworkAvailable()) {
                     potIdEditText.setText("No Internet Connection");
@@ -160,12 +161,12 @@ public class AddPlantFragment extends Fragment {
 
             case EDITPLANT:
                 displayMode = DisplayMode.WRITE;
-//                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Editing " + plant.getName());
-
 
                 addImage.setVisibility(View.VISIBLE);
+                cancelButton.setVisibility(View.VISIBLE);
                 bDayLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.VISIBLE);
+                deletePlantButton.setVisibility(View.VISIBLE);
 
                 if(!pc.isNetworkAvailable()) {
                     potIdEditText.setText("No Internet Connection");
@@ -186,6 +187,7 @@ public class AddPlantFragment extends Fragment {
                 lastWateredLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.GONE);
                 cancelButton.setVisibility(View.GONE);
+                deletePlantButton.setVisibility(View.GONE);
                 if(plant.getBirthDate() == null) bDayLayout.setVisibility(View.GONE);
                 else bDayLayout.setVisibility(View.VISIBLE);
                 if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
@@ -203,7 +205,7 @@ public class AddPlantFragment extends Fragment {
         inflater.inflate(R.menu.add_plant_menu, menu);
         this.menu = menu;
 
-        // Since default icon is done icon, set to icon to edit icon if in read mode
+        // Since default icon is done icon, sect to icon to edit icon if in read mode
         if (displayMode == displayMode.READ_ONLY)
             menu.getItem(0).setIcon(ContextCompat.getDrawable(getContext(), R.drawable.ic_edit));
     }
@@ -214,7 +216,7 @@ public class AddPlantFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.set_editing:
                 switch(plantViewState){
-                    case ADDPLANT: //addImage should be gone
+                    case ADDPLANT:
                     case EDITPLANT:
                         final String potId = potIdEditText.getText().toString();
                         loadingBar.setVisibility(View.VISIBLE);
@@ -264,7 +266,7 @@ public class AddPlantFragment extends Fragment {
         switch(plantViewState) {
             case ADDPLANT:
                 if(pc.createPlant(plant)) {
-                    NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                    NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                     navigationView.getMenu().getItem(1).setChecked(false);
                     plantViewState = plantViewState.VIEWPLANT;
                 }
@@ -322,6 +324,7 @@ public class AddPlantFragment extends Fragment {
         @Override
         public void onClick(View view) {
             pc.deletePlant(plant);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
             getActivity().onBackPressed();
         }
     };
