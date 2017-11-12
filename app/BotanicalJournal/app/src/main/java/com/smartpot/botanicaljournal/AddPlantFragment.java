@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,7 +81,6 @@ public class AddPlantFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         pc = new PlantController(getContext());
-        Log.i("TAG", "POTIDDD " + plant.getPotId());
     }
 
     @Override

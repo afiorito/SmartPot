@@ -27,6 +27,8 @@ public class PlantController {
     RequestQueue requestQueue;
     Context context;
 
+    protected static final String TAG = "PlantController";
+
     PlantController(Context context) {
 
         this.context = context;
@@ -38,7 +40,7 @@ public class PlantController {
         return handler.getPlants();
     }
 
-    public void isValidSmartPot(final String potId, final VolleyCallback callback) {
+    public void isValidSmartPot(final String potId, final VolleyResponse callback) {
         // use for production, don't use this url for testing
         //        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
 
@@ -67,6 +69,52 @@ public class PlantController {
 
                     }
                 });
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void updatePlant(final int potIndex, final String potId, final VolleyCallback callback)
+    {
+        // URL to Access API for specific Plant
+        // use this in production
+        // String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
+        String url = "https://jsonplaceholder.typicode.com/posts/1";
+
+        //Make JSON Request
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        //Log Response from Server
+                        Log.i(TAG, response.toString());
+
+                        try {
+                            if (response.get("potId").equals(potId)) {
+                                //Get UNIX Timestamp from String (Assume API sends proper Data) as it doesn't parse
+                                Date time = new Date(Long.valueOf(response.getString("lastWatered")));
+                                //Get the Moisture Level
+                                int moistureLevel = response.getInt("moisture");
+
+                                callback.onResponse(true, potId, moistureLevel, time);
+                            }
+                            else {
+                                callback.onResponse(false, potId, -1, null);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            callback.onResponse(false, potId, -1, null);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Log.e(TAG, error.toString());
+                    }
+                });
+
         requestQueue.add(jsObjRequest);
     }
 

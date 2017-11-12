@@ -1,9 +1,15 @@
 package com.smartpot.botanicaljournal;
 
+import java.util.Date;
+
 /**
- * Created by Anthony on 2017-11-10.
+ * Created by Anthony on 2017-11-12.
  */
 
-public interface VolleyCallback {
-    void onResponse(boolean success);
+public class VolleyCallback implements VolleyResponse {
+    @Override
+    public void onResponse(boolean success) {}
+
+    @Override
+    public void onResponse(boolean success, String potId, int moistureLevel, Date time) {}
 }

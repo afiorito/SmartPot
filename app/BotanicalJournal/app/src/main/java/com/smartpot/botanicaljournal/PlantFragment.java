@@ -19,7 +19,12 @@ import java.util.Date;
 
 public class PlantFragment extends Fragment {
 
+    protected static final String TAG = "Plant Fragment";
+
     private PlantController pc;
+
+    private ArrayList<Plant> plants;
+    private PlantAdapter plantAdapter;
 
     public static PlantFragment newInstance() {
         return new PlantFragment();
@@ -42,11 +47,12 @@ public class PlantFragment extends Fragment {
         pc = new PlantController(getContext());
 
         // Load plants from the database
-        ArrayList<Plant> plants = pc.getPlants();
-//        plants.add(new Plant(0, "Scammy", "Scammer", new Date(), "", new Date(), 0));
+        plants = pc.getPlants();
 
         // Create plant adapter
-        PlantAdapter plantAdapter = new PlantAdapter(getContext(), plants);
+        plantAdapter = new PlantAdapter(getContext(), plants);
+
+        updatePlants();
 
         refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(
@@ -56,6 +62,7 @@ public class PlantFragment extends Fragment {
                         Log.i("TAG", "onRefresh called from SwipeRefreshLayout");
 
                         // Update plant data here
+                        updatePlants();
                         refreshLayout.setRefreshing(false);
                     }
                 }
@@ -100,4 +107,36 @@ public class PlantFragment extends Fragment {
 
         return view;
     }
+
+
+    private void updatePlants() {
+
+        for(int i = 0; i < plants.size(); i++) {
+            //What Plant to update in Array
+            final int plantIndex = i;
+
+            //Pot ID
+            String potId = plants.get(i).getPotId();
+
+            //If potID is not null, make request to Server
+            if (!potId.equals("")) {
+                pc.updatePlant(plantIndex, potId, new VolleyCallback() {
+                    @Override
+                    public void onResponse(boolean success, String potId, int moistureLevel, Date timeStamp) {
+                        if (success) {
+                            plants.get(plantIndex).setMoistureLevel(moistureLevel);
+                            plants.get(plantIndex).setLastWatered(timeStamp);
+                            plantAdapter.notifyDataSetChanged();
+                        }
+                        else {
+                            Log.e(TAG, "Couldn't get Data for: " + potId);
+                        }
+                    }
+                });
+            }
+
+        }
+    }
+
+
 }
