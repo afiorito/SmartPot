@@ -14,16 +14,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,8 +24,7 @@ public class PlantFragment extends Fragment {
     private PlantController pc;
 
     private ArrayList<Plant> plants;
-
-    PlantAdapter plantAdapter = null;
+    private PlantAdapter plantAdapter;
 
     public static PlantFragment newInstance() {
         return new PlantFragment();
@@ -59,7 +48,6 @@ public class PlantFragment extends Fragment {
 
         // Load plants from the database
         plants = pc.getPlants();
-//        plants.add(new Plant(0, "Scammy", "Scammer", new Date(), "", new Date(), 0));
 
         // Create plant adapter
         plantAdapter = new PlantAdapter(getContext(), plants);
@@ -74,6 +62,7 @@ public class PlantFragment extends Fragment {
                         Log.i("TAG", "onRefresh called from SwipeRefreshLayout");
 
                         // Update plant data here
+                        updatePlants();
                         refreshLayout.setRefreshing(false);
                     }
                 }
@@ -120,32 +109,26 @@ public class PlantFragment extends Fragment {
     }
 
 
-    protected void updatePlants()
-    {
+    private void updatePlants() {
 
-        for(int i =0; i < plants.size(); i++)
-        {
+        for(int i = 0; i < plants.size(); i++) {
             //What Plant to update in Array
-            int plantIndex = i;
+            final int plantIndex = i;
 
             //Pot ID
-            String tempPotId = plants.get(i).getPotId();
+            String potId = plants.get(i).getPotId();
 
             //If potID is not null, make request to Server
-            if (tempPotId != "")
-            {
-                pc.updatePlant(plantIndex, tempPotId, new PlantUpdateCallback() {
+            if (!potId.equals("")) {
+                pc.updatePlant(plantIndex, potId, new VolleyCallback() {
                     @Override
-                    public void onResponse(boolean success, String potId, int index, int moistureLevel, Date timeStamp)
-                    {
-                        if (success)
-                        {
-                            plants.get(index).setMoistureLevel(moistureLevel);
-                            plants.get(index).setLastWatered(timeStamp);
+                    public void onResponse(boolean success, String potId, int moistureLevel, Date timeStamp) {
+                        if (success) {
+                            plants.get(plantIndex).setMoistureLevel(moistureLevel);
+                            plants.get(plantIndex).setLastWatered(timeStamp);
                             plantAdapter.notifyDataSetChanged();
                         }
-                        else
-                            {
+                        else {
                             Log.e(TAG, "Couldn't get Data for: " + potId);
                         }
                     }
