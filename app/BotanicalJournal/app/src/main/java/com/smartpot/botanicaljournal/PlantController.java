@@ -27,6 +27,8 @@ public class PlantController {
     RequestQueue requestQueue;
     Context context;
 
+    protected static final String TAG = "PlantController";
+
     PlantController(Context context) {
 
         this.context = context;
@@ -67,6 +69,52 @@ public class PlantController {
 
                     }
                 });
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void updatePlant(final int potIndex, final String potId, final PlantUpdateCallback callback)
+    {
+        //URL to Access API for specific Plant
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
+
+        //Make JSON Request
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response)
+                    {
+                        //Log Response from Server
+                        Log.i(TAG, response.toString());
+
+                        try{
+                            if (response.get("potId").equals(potId))
+                            {
+                                //Get UNIX Timestamp from String (Assume API sends proper Data) as it doesn't parse
+                                Date time = new Date(Long.valueOf(response.getString("lastWatered")));
+                                //Get the Moisture Level
+                                int moistureLevel = response.getInt("moisture");
+
+                                callback.onResponse(true, potId, potIndex, moistureLevel, time);
+                            }
+                            else
+                            {
+                                callback.onResponse(false, potId, -1, -1, null);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.e(TAG, e.toString());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Log.e(TAG, error.toString());
+                    }
+                });
+
         requestQueue.add(jsObjRequest);
     }
 

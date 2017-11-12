@@ -14,12 +14,28 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class PlantFragment extends Fragment {
 
+    protected static final String TAG = "Plant Fragment";
+
     private PlantController pc;
+
+    private ArrayList<Plant> plants;
+
+    PlantAdapter plantAdapter = null;
 
     public static PlantFragment newInstance() {
         return new PlantFragment();
@@ -42,11 +58,13 @@ public class PlantFragment extends Fragment {
         pc = new PlantController(getContext());
 
         // Load plants from the database
-        ArrayList<Plant> plants = pc.getPlants();
+        plants = pc.getPlants();
 //        plants.add(new Plant(0, "Scammy", "Scammer", new Date(), "", new Date(), 0));
 
         // Create plant adapter
-        PlantAdapter plantAdapter = new PlantAdapter(getContext(), plants);
+        plantAdapter = new PlantAdapter(getContext(), plants);
+
+        updatePlants();
 
         refreshLayout = view.findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(
@@ -100,4 +118,42 @@ public class PlantFragment extends Fragment {
 
         return view;
     }
+
+
+    protected void updatePlants()
+    {
+
+        for(int i =0; i < plants.size(); i++)
+        {
+            //What Plant to update in Array
+            int plantIndex = i;
+
+            //Pot ID
+            String tempPotId = plants.get(i).getPotId();
+
+            //If potID is not null, make request to Server
+            if (tempPotId != "")
+            {
+                pc.updatePlant(plantIndex, tempPotId, new PlantUpdateCallback() {
+                    @Override
+                    public void onResponse(boolean success, String potId, int index, int moistureLevel, Date timeStamp)
+                    {
+                        if (success)
+                        {
+                            plants.get(index).setMoistureLevel(moistureLevel);
+                            plants.get(index).setLastWatered(timeStamp);
+                            plantAdapter.notifyDataSetChanged();
+                        }
+                        else
+                            {
+                            Log.e(TAG, "Couldn't get Data for: " + potId);
+                        }
+                    }
+                });
+            }
+
+        }
+    }
+
+
 }
