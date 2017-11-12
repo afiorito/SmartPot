@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.smartpot.botanicaljournal.PlantFragment">
+    tools:context="com.smartpot.botanicaljournal.Views.PlantFragment">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.smartpot.botanicaljournal.NavigationActivity"
+        tools:context="com.smartpot.botanicaljournal.Views.NavigationActivity"
         tools:showIn="@layout/app_bar_main"
         android:id="@+id/main_activity_layout">
 

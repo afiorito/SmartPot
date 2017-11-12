@@ -1,6 +1,5 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
-import android.app.ActionBar;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -10,6 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.smartpot.botanicaljournal.Models.Plant;
+import com.smartpot.botanicaljournal.Helpers.PlantViewState;
+import com.smartpot.botanicaljournal.R;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -59,9 +62,9 @@ public class NavigationActivity extends AppCompatActivity
             transaction.replace(R.id.frame_layout, PlantFragment.newInstance()).commit();
         }
         else if (id == R.id.addPlant) {
-            AddPlantFragment addPlantFragment = AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
-            addPlantFragment.setPlant(new Plant());
-            transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
+            ManagePlantFragment managePlantFragment = ManagePlantFragment.newInstance(PlantViewState.ADDPLANT);
+            managePlantFragment.setPlant(new Plant());
+            transaction.replace(R.id.frame_layout, managePlantFragment).addToBackStack(null).commit();
         }
         else if (id == R.id.settings) {
             getSupportActionBar().setTitle("Settings");

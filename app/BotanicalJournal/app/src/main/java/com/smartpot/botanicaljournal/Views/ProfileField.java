@@ -1,20 +1,17 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 /**
  * Created by MG on 2017-11-05.
  */
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -22,11 +19,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import static com.smartpot.botanicaljournal.DisplayMode.READ_ONLY;
+import static com.smartpot.botanicaljournal.Helpers.DisplayMode.READ_ONLY;
 
+import com.smartpot.botanicaljournal.Helpers.DisplayMode;
 import com.smartpot.botanicaljournal.R;
-
-import java.lang.reflect.Type;
+import com.smartpot.botanicaljournal.Helpers.ViewHelper;
 
 
 public class ProfileField extends LinearLayout{

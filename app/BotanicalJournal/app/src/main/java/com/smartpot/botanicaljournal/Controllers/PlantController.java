@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Controllers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -11,6 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.smartpot.botanicaljournal.Models.DBHandler;
+import com.smartpot.botanicaljournal.Models.Plant;
+import com.smartpot.botanicaljournal.Helpers.VolleyCallback;
+import com.smartpot.botanicaljournal.Helpers.VolleyResponse;
 
 import org.json.JSONObject;
 
@@ -29,7 +33,7 @@ public class PlantController {
 
     protected static final String TAG = "PlantController";
 
-    PlantController(Context context) {
+    public PlantController(Context context) {
 
         this.context = context;
         handler = new DBHandler(context);

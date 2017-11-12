@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.smartpot.botanicaljournal.AddPlantFragment">
+    tools:context="com.smartpot.botanicaljournal.Views.ManagePlantFragment">
 
     <RelativeLayout
         android:id="@+id/plantLayout"
@@ -77,7 +77,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@+id/plantImageLayout">
 
-                <com.smartpot.botanicaljournal.ProfileField
+                <com.smartpot.botanicaljournal.Views.ProfileField
                     android:id="@+id/plantName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                     custom:textColor="@color/colorPrimaryDark"
                     custom:textSize="26sp" />
 
-                <com.smartpot.botanicaljournal.ProfileField
+                <com.smartpot.botanicaljournal.Views.ProfileField
                     android:id="@+id/plantPhylogeny"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <com.smartpot.botanicaljournal.ProfileField
+                <com.smartpot.botanicaljournal.Views.ProfileField
                     android:id="@+id/lastWatered"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

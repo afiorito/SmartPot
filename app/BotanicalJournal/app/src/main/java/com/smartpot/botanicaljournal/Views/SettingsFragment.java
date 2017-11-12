@@ -1,12 +1,12 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.smartpot.botanicaljournal.R;
 
 public class SettingsFragment extends Fragment {
     public static SettingsFragment newInstance() {

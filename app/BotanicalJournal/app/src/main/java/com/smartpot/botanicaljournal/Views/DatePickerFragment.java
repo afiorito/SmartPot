@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.widget.DatePicker;
+
+import com.smartpot.botanicaljournal.Views.ManagePlantFragment;
+
 import java.util.Calendar;
 
 /**
@@ -34,7 +37,7 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, day);
-        AddPlantFragment plantFragment = ((AddPlantFragment) getTargetFragment());
+        ManagePlantFragment plantFragment = ((ManagePlantFragment) getTargetFragment());
         plantFragment.setDate(c.getTime());
     }
 

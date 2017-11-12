@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Helpers;
 
 import java.util.Date;
 

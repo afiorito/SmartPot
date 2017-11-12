@@ -1,7 +1,6 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.smartpot.botanicaljournal.Models.Plant;
+import com.smartpot.botanicaljournal.R;
+import com.smartpot.botanicaljournal.Helpers.ViewHelper;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;

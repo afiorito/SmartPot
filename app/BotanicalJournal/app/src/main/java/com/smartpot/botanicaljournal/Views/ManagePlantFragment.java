@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +26,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.smartpot.botanicaljournal.Helpers.DisplayMode;
+import com.smartpot.botanicaljournal.Models.Plant;
+import com.smartpot.botanicaljournal.Controllers.PlantController;
+import com.smartpot.botanicaljournal.Helpers.PlantViewState;
+import com.smartpot.botanicaljournal.R;
+import com.smartpot.botanicaljournal.Helpers.ViewHelper;
+import com.smartpot.botanicaljournal.Helpers.VolleyCallback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -35,7 +42,7 @@ import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddPlantFragment extends Fragment {
+public class ManagePlantFragment extends Fragment {
 
     private PlantController pc;
 
@@ -70,9 +77,9 @@ public class AddPlantFragment extends Fragment {
     RelativeLayout bDayLayout;
 
 
-    public static AddPlantFragment newInstance(PlantViewState state) {
+    public static ManagePlantFragment newInstance(PlantViewState state) {
         plantViewState = state;
-        AddPlantFragment fragment = new AddPlantFragment();
+        ManagePlantFragment fragment = new ManagePlantFragment();
         return fragment;
     }
 
@@ -127,7 +134,7 @@ public class AddPlantFragment extends Fragment {
             @Override
             public void onClick(View v){
                 AppCompatDialogFragment newFragment = new DatePickerFragment();
-                newFragment.setTargetFragment(AddPlantFragment.this, 0);
+                newFragment.setTargetFragment(ManagePlantFragment.this, 0);
                 newFragment.show(getActivity().getSupportFragmentManager(),"Date Picker");
             }}
         );

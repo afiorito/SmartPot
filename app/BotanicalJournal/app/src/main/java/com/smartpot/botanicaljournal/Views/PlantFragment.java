@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Views;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,6 +13,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.smartpot.botanicaljournal.Controllers.PlantController;
+import com.smartpot.botanicaljournal.Models.Plant;
+import com.smartpot.botanicaljournal.Helpers.PlantViewState;
+import com.smartpot.botanicaljournal.R;
+import com.smartpot.botanicaljournal.Helpers.VolleyCallback;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,10 +88,10 @@ public class PlantFragment extends Fragment {
                 NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
                 navigationView.getMenu().getItem(0).setChecked(false);
                 Plant plant = (Plant)parent.getAdapter().getItem(position);
-                AddPlantFragment addPlantFragment= AddPlantFragment.newInstance(PlantViewState.VIEWPLANT);
-                addPlantFragment.setPlant(plant);
+                ManagePlantFragment managePlantFragment = ManagePlantFragment.newInstance(PlantViewState.VIEWPLANT);
+                managePlantFragment.setPlant(plant);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
+                transaction.replace(R.id.frame_layout, managePlantFragment).addToBackStack(null).commit();
             }
         });
 
@@ -97,10 +103,10 @@ public class PlantFragment extends Fragment {
                     public void onClick(View v){
                         NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
                         navigationView.getMenu().getItem(1).setChecked(true);
-                        AddPlantFragment addPlantFragment = AddPlantFragment.newInstance(PlantViewState.ADDPLANT);
-                        addPlantFragment.setPlant(new Plant());
+                        ManagePlantFragment managePlantFragment = ManagePlantFragment.newInstance(PlantViewState.ADDPLANT);
+                        managePlantFragment.setPlant(new Plant());
                         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, addPlantFragment).addToBackStack(null).commit();
+                        transaction.replace(R.id.frame_layout, managePlantFragment).addToBackStack(null).commit();
                     }
                 }
         );

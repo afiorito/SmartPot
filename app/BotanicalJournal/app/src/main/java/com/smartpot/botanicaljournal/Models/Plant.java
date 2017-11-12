@@ -1,4 +1,4 @@
-package com.smartpot.botanicaljournal;
+package com.smartpot.botanicaljournal.Models;
 
 import java.util.Date;
 
@@ -19,11 +19,11 @@ public class Plant {
     private String imagePath;
 
 
-    Plant() {
+    public Plant() {
         this.imagePath = "";
     }
 
-    Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel, String imagePath, String potId) {
+    public Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel, String imagePath, String potId) {
         this.id = id;
         this.name = name;
         this.phylogeny = phylogeny;
@@ -41,15 +41,11 @@ public class Plant {
             this.imagePath = imagePath;
     }
 
-    Plant(String name, String phylogeny, Date birthDate, String notes) {
+    public Plant(String name, String phylogeny, Date birthDate, String notes) {
         this.name = name;
         this.phylogeny = phylogeny;
         this.birthDate = birthDate;
         this.notes = notes;
-    }
-
-    Plant(String name) {
-        this.name = name;
     }
 
     public long getId() {
