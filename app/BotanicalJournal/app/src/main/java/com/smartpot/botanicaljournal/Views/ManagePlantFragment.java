@@ -272,9 +272,11 @@ public class ManagePlantFragment extends Fragment {
         updatePlantValues();
         switch(plantViewState) {
             case ADDPLANT:
-                if(pc.createPlant(plant)) {
+                long id = pc.createPlant(plant);
+                if(id != -1) {
                     NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                     navigationView.getMenu().getItem(1).setChecked(false);
+                    plant.setId(id);
                     plantViewState = plantViewState.VIEWPLANT;
                 }
                 break;
@@ -323,7 +325,8 @@ public class ManagePlantFragment extends Fragment {
             Date newDate = new Date();
             pc.updateLastWatered(plant, newDate);
             plant.setLastWatered(newDate);
-            setFieldValues();
+            lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
+
         }
     };
 
@@ -332,6 +335,8 @@ public class ManagePlantFragment extends Fragment {
         public void onClick(View view) {
             pc.deletePlant(plant);
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+            NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+            navigationView.getMenu().getItem(0).setChecked(true);
             getActivity().onBackPressed();
         }
     };

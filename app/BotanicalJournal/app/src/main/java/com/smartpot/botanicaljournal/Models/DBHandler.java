@@ -3,6 +3,7 @@ package com.smartpot.botanicaljournal.Models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -179,6 +180,12 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return plants;
 
+    }
+
+    public long countPlants() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        return DatabaseUtils.queryNumEntries(db, TABLE_PLANTS);
     }
 
     private int getMostRecentMoistureValue(long id) {

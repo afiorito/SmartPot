@@ -129,12 +129,12 @@ public class PlantController {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public boolean createPlant(Plant plant) {
+    public long createPlant(Plant plant) {
         // Do any checks here
 
-        handler.addPlant(plant);
+        long id = handler.addPlant(plant);
 
-        return true;
+        return id;
     }
 
     public boolean updatePlant(Plant plant) {
@@ -154,6 +154,10 @@ public class PlantController {
         handler.deletePlant(plant.getId());
 
         return true;
+    }
+
+    public long getPlantCount() {
+        return handler.countPlants();
     }
 
     public boolean updateLastWatered(Plant plant, Date date) {
