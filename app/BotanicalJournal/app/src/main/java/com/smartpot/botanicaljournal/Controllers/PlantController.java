@@ -46,10 +46,10 @@ public class PlantController {
 
     public void isValidSmartPot(final String potId, final VolleyResponse callback) {
         // use for production, don't use this url for testing
-        //        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://jsonplaceholder.typicode.com/posts/1", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -80,8 +80,8 @@ public class PlantController {
     {
         // URL to Access API for specific Plant
         // use this in production
-        // String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
-        String url = "https://jsonplaceholder.typicode.com/posts/1";
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
+//        String url = "https://jsonplaceholder.typicode.com/posts/1";
 
         //Make JSON Request
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
