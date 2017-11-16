@@ -1,0 +1,7 @@
+{
+  "pathParameters": {
+    "potId": "pot1"
+  },
+  "httpMethod": "GET",
+  "body": "{ \"waterLevel\": 5 }"
+}

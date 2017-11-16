@@ -50,3 +50,21 @@ functions:
       - http:
           method: put
           path: smartpot/{potId}/watered
+  running:
+    handler: endpoints/running.main
+    events:
+      - http:
+          method: put
+          path: smartpot/{potId}/running
+  watering:
+    handler: endpoints/watering.main
+    events:
+      - http:
+          method: put
+          path: smartpot/{potId}/watering
+  waterLevel:
+    handler: endpoints/water-level.main
+    events:
+      - http:
+          method: put
+          path: smartpot/{potId}/waterLevel

@@ -1,0 +1,7 @@
+{
+  "pathParameters": {
+    "potId": "pot1"
+  },
+  "httpMethod": "PUT",
+  "body": "{ \"running\": true }"
+}
