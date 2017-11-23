@@ -26,7 +26,6 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        Log.d("DatePickerFragment", Integer.toString(month));
         return new DatePickerDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
     }
 
