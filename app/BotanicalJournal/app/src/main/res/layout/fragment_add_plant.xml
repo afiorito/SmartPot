@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.smartpot.botanicaljournal.Views.ManagePlantFragment"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.smartpot.botanicaljournal.Views.ManagePlantFragment">
+    tools:background="@android:color/background_light">
 
     <RelativeLayout
         android:id="@+id/plantLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
 
         <ProgressBar
             android:id="@+id/loadingBar"
@@ -27,6 +34,7 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
             android:clipToPadding="false">
 
             <ImageView
@@ -95,9 +103,9 @@
                     android:layout_below="@+id/plantName"
                     android:layout_centerVertical="true"
                     custom:hintText="@string/plantTypeText"
+                    custom:isItalic="true"
                     custom:textColor="@color/colorPrimaryDark"
-                    custom:textSize="16sp"
-                    custom:isItalic="true" />
+                    custom:textSize="16sp" />
 
 
             </RelativeLayout>
@@ -109,7 +117,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="0dp"
+            android:background="@android:color/background_light"
             android:orientation="vertical"
             android:paddingEnd="16dp"
             android:paddingStart="16dp">
@@ -156,9 +166,20 @@
                     android:layout_marginTop="8dp"
                     android:max="100"
                     android:progressDrawable="@layout/progress_bar"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintVertical_bias="1.0" />
+
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/moistureGraph"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@+id/moistureBar"
+                    android:visibility="gone" />
+
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -387,5 +408,5 @@
     </RelativeLayout>
 
 
-
 </ScrollView>
+</android.support.v4.widget.SwipeRefreshLayout>
