@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+        <ListPreference     android:title="Moisture Data Interval"
+
+            android:summary="%s"
+            android:key="dataInterval"
+            android:defaultValue="1"
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:title="Smart Pot Running Status"
+            android:key="onOffSwitch"
+            android:summary="Turn this option on or off" />
+    </PreferenceCategory>
+</PreferenceScreen>

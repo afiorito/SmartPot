@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceFragment;
 import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +71,7 @@ public class ManagePlantFragment extends Fragment {
     private ImageView addImage;
     private ImageButton cancelButton;
     private Button updateLastWateredButton;
+    private Button settingsPlantButton;
     private Button deletePlantButton;
     private ProgressBar loadingBar;
 
@@ -121,12 +128,14 @@ public class ManagePlantFragment extends Fragment {
         addImage = view.findViewById(R.id.addImage);
         cancelButton = view.findViewById(R.id.cancelButton);
         updateLastWateredButton = view.findViewById(R.id.updateLastWateredButton);
+        settingsPlantButton = view.findViewById(R.id.settingsPlantButton);
         deletePlantButton = view.findViewById(R.id.deletePlantButton);
         loadingBar = view.findViewById(R.id.loadingBar);
         loadingBar.setVisibility(View.GONE);
 
         cancelButton.setOnClickListener(clearDate);
         updateLastWateredButton.setOnClickListener(updateLastWatered);
+        settingsPlantButton.setOnClickListener(settingsPlant);
         deletePlantButton.setOnClickListener(deletePlant);
 
         // Set OnClickListener to birthday view
@@ -157,6 +166,7 @@ public class ManagePlantFragment extends Fragment {
 
                 moistureLayout.setVisibility(View.GONE);
                 lastWateredLayout.setVisibility(View.GONE);
+                settingsPlantButton.setVisibility(View.GONE);
                 deletePlantButton.setVisibility(View.GONE);
 
                 if(!pc.isNetworkAvailable()) {
@@ -173,6 +183,7 @@ public class ManagePlantFragment extends Fragment {
                 cancelButton.setVisibility(View.VISIBLE);
                 bDayLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.VISIBLE);
+                settingsPlantButton.setVisibility(View.VISIBLE);
                 deletePlantButton.setVisibility(View.VISIBLE);
 
                 if(!pc.isNetworkAvailable()) {
@@ -194,6 +205,7 @@ public class ManagePlantFragment extends Fragment {
                 lastWateredLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.GONE);
                 cancelButton.setVisibility(View.GONE);
+                settingsPlantButton.setVisibility(View.GONE);
                 deletePlantButton.setVisibility(View.GONE);
                 if(plant.getBirthDate() == null) bDayLayout.setVisibility(View.GONE);
                 else bDayLayout.setVisibility(View.VISIBLE);
@@ -327,6 +339,15 @@ public class ManagePlantFragment extends Fragment {
             plant.setLastWatered(newDate);
             lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
 
+        }
+    };
+
+    Button.OnClickListener settingsPlant = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) { //goes info PrefsFragment.java
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            PrefsFragment mPrefsFragment = new PrefsFragment();
+            transaction.replace(R.id.frame_layout, mPrefsFragment).addToBackStack(null).commit(); //puts into backstack the layout so that you can come back to it
         }
     };
 

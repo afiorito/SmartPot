@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
 
 import com.smartpot.botanicaljournal.Controllers.PlantController;
 import com.smartpot.botanicaljournal.Models.Plant;
@@ -40,7 +42,6 @@ public class NavigationActivity extends AppCompatActivity
 
         plantCountTextView = navigationView.getHeaderView(0).findViewById(R.id.plantCountTextView);
         updatePlantCount();
-
 
         // Set the sidebar navigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
