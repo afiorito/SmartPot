@@ -1,5 +1,7 @@
 package com.smartpot.botanicaljournal.Models;
 
+import com.smartpot.botanicaljournal.Helpers.MoistureInterval;
+
 import java.util.Date;
 
 /**
@@ -18,12 +20,17 @@ public class Plant {
     private int moistureLevel;
     private String imagePath;
 
+    private MoistureInterval moistureInterval;
+    private boolean potStatus;
+
 
     public Plant() {
         this.imagePath = "";
     }
 
-    public Plant(long id, String name, String phylogeny, Date birthDate, String notes, Date lastWatered, int moistureLevel, String imagePath, String potId) {
+    public Plant(long id, String name, String phylogeny, Date birthDate,
+                 String notes, Date lastWatered, int moistureLevel, String imagePath, String potId,
+                    MoistureInterval moistureInterval, boolean potStatus) {
         this.id = id;
         this.name = name;
         this.phylogeny = phylogeny;
@@ -39,6 +46,8 @@ public class Plant {
             this.imagePath = "";
         else
             this.imagePath = imagePath;
+        this.moistureInterval = moistureInterval;
+        this.potStatus = potStatus;
     }
 
     public Plant(String name, String phylogeny, Date birthDate, String notes) {
@@ -75,41 +84,36 @@ public class Plant {
     public String getPotId() {
         return potId;
     }
-
+    public MoistureInterval getMoistureInterval() {return moistureInterval;}
+    public boolean isPotStatus() {return potStatus;}
 
     public void setPotId(String potId) {
         this.potId = potId;
     }
-
     public void setId(long id) {
         this.id = id;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public void setPhylogeny(String phylogeny) {
         this.phylogeny = phylogeny;
     }
-
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
-
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
     public void setLastWatered(Date lastWatered) {
         this.lastWatered = lastWatered;
     }
-
     public void setMoistureLevel(int moistureLevel) {
         this.moistureLevel = moistureLevel;
     }
-
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+    public void setMoistureInterval(MoistureInterval moistureInterval) {this.moistureInterval = moistureInterval;}
+    public void setPotStatus(boolean potStatus) {this.potStatus = potStatus;}
 }

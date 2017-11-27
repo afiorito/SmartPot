@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.smartpot.botanicaljournal.Helpers.MoistureInterval;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COL_PLANT_NOTES = "notes";
     private static final String COL_PLANT_IMAGE = "image";
     private static final String COL_PLANT_POT_ID = "potId";
+    private static final String COL_PLANT_MOISTURE_INTERVAL = "moisture_interval";
+    private static final String COL_PLANT_POT_STATUS = "pot_status";
 
     // FOREIGN KEY FOR LAST_WATERED & MOISTURE_LEVEL
     private static final String FK_CONSTRAINT_PLANTS = "fk_plants";
@@ -70,7 +74,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COL_PLANT_NOTES + " TEXT,"
                 + COL_PLANT_IMAGE + " TEXT,"
                 + COL_PLANT_POT_ID + " TEXT,"
-                + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now'))"
+                + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now')),"
+                + COL_PLANT_MOISTURE_INTERVAL + " INTEGER,"
+                + COL_PLANT_POT_STATUS + " BOOLEAN"
                 + ");";
 
         String createLastWateredTable =     "CREATE TABLE " + TABLE_LAST_WATERED + "("
@@ -84,7 +90,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + " ON DELETE CASCADE"
                 + ");";
 
-        String createMoistureLevelTable =     "CREATE TABLE " + TABLE_MOISTURE_LEVEL + "("
+        String createMoistureLevelTable = "CREATE TABLE " + TABLE_MOISTURE_LEVEL + "("
                 + COL_ID + " INTEGER PRIMARY KEY,"
                 + COL_PLANT_ID + " INTEGER,"
                 + COL_MOISTURE_VALUE + " INTEGER,"
@@ -177,7 +183,11 @@ public class DBHandler extends SQLiteOpenHelper {
             int moistureLevel = getMostRecentMoistureValue(id);
             String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
             String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
-            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel, imagePath, potId));
+            int interval = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_INTERVAL));
+            MoistureInterval moistureInterval = MoistureInterval.values()[interval];
+            boolean potStatus = c.getInt(c.getColumnIndex(COL_PLANT_POT_STATUS)) > 0;
+            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel, imagePath, potId,
+                    moistureInterval, potStatus));
             c.moveToNext();
         }
         c.close();
@@ -214,7 +224,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<GraphData> getMoistureLevels(Long id) {
+    public ArrayList<GraphData> getMoistureLevels(long id) {
 
         //Access Database and reset values for testing
         SQLiteDatabase db = getReadableDatabase();
@@ -313,5 +323,66 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.close();
     }
+
+    public void setMoistureInterval(long id, int interval) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(COL_PLANT_MOISTURE_INTERVAL, interval);
+        db.update(TABLE_PLANTS, cv, COL_ID + " = ? ", new String[] {String.valueOf(id)});
+
+        db.close();
+    }
+
+    public MoistureInterval getMoistureInterval(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String query = "SELECT " + COL_PLANT_MOISTURE_INTERVAL + " FROM " + TABLE_PLANTS
+                + " WHERE " + COL_ID + " = " + id + ";";
+
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        int interval = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_INTERVAL));
+
+        c.close();
+        db.close();
+
+        switch(interval){
+            case 0: return MoistureInterval.THIRTYMINS;
+            case 1: return MoistureInterval.HOURLY;
+            case 2: return MoistureInterval.DAILY;
+            case 3: return MoistureInterval.WEEKLY;
+            default: return MoistureInterval.THIRTYMINS;
+        }
+    }
+
+    public void setPotStatus(long id, boolean status) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(COL_PLANT_POT_STATUS, status);
+        db.update(TABLE_PLANTS, cv, COL_ID + " = ? ", new String[] {String.valueOf(id)});
+
+        db.close();
+    }
+
+    public boolean getPotStatus(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String query = "SELECT " + COL_PLANT_POT_STATUS + " FROM " + TABLE_PLANTS
+                + " WHERE " + COL_ID + " = " + id + ";";
+
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        boolean potStatus = c.getInt(c.getColumnIndex(COL_PLANT_POT_STATUS)) > 0;
+
+        c.close();
+        db.close();
+
+        return potStatus;
+    }
+
 
 }

@@ -10,10 +10,6 @@
             android:id="@+id/addPlant"
             android:icon="@drawable/ic_pot"
             android:title="Add a New Plant" />
-        <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_settings"
-            android:title="Settings" />
     </group>
 
 </menu>

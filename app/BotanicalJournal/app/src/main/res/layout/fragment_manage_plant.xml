@@ -395,13 +395,22 @@
             </RelativeLayout>
 
             <Button
+                android:id="@+id/settingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimary"
+                android:text="Plant Settings"
+                android:textColor="@color/colorLightBackground" />
+
+            <Button
                 android:id="@+id/deletePlantButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:background="@color/colorAccent"
                 android:text="Delete"
-                android:textColor="#9b9b9b" />
+                android:textColor="@color/colorLightBackground" />
 
         </LinearLayout>
 

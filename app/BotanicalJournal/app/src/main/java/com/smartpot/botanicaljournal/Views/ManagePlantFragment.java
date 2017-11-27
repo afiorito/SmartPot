@@ -48,13 +48,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.security.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -84,6 +80,7 @@ public class ManagePlantFragment extends Fragment {
     private ImageView addImage;
     private ImageButton cancelButton;
     private Button updateLastWateredButton;
+    private Button settingsButton;
     private Button deletePlantButton;
     private ProgressBar loadingBar;
 
@@ -114,7 +111,7 @@ public class ManagePlantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_add_plant, container, false);
+        view = inflater.inflate(R.layout.fragment_manage_plant, container, false);
 
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         refreshLayout.setOnRefreshListener(
@@ -143,9 +140,9 @@ public class ManagePlantFragment extends Fragment {
         // Get References to views
         lastWateredLayout = view.findViewById(R.id.lastWateredLayout);
         moistureLayout = view.findViewById(R.id.moistureLayout);
+        moistureLayout.setOnClickListener(setMoistureGraphVisibility);
         potIdLayout = view.findViewById(R.id.potIdLayout);
         bDayLayout = view.findViewById(R.id.bDayLayout);
-
         plantNameField = view.findViewById(R.id.plantName);
         plantPhylogenyField = view.findViewById(R.id.plantPhylogeny);
         progressBar = view.findViewById(R.id.moistureBar);
@@ -158,30 +155,14 @@ public class ManagePlantFragment extends Fragment {
         cancelButton = view.findViewById(R.id.cancelButton);
         updateLastWateredButton = view.findViewById(R.id.updateLastWateredButton);
         deletePlantButton = view.findViewById(R.id.deletePlantButton);
+        settingsButton = view.findViewById(R.id.settingsButton);
         loadingBar = view.findViewById(R.id.loadingBar);
         loadingBar.setVisibility(View.GONE);
 
         cancelButton.setOnClickListener(clearDate);
         updateLastWateredButton.setOnClickListener(updateLastWatered);
+        settingsButton.setOnClickListener(viewSettings);
         deletePlantButton.setOnClickListener(deletePlant);
-
-        moistureLayout.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Animation animation;
-                if (moistureGraphState == false) {
-                    setMoistureGraph();
-                    moistureGraph.setVisibility(View.VISIBLE);
-                    //animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
-                }
-                else {
-                    moistureGraph.setVisibility(View.GONE);
-                    //animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_up);
-                }
-                //moistureGraph.startAnimation(animation);
-                moistureGraphState =! moistureGraphState;
-            }}
-        );
 
         // Set OnClickListener to birthday view
         bDayField.setOnClickListener(new View.OnClickListener(){
@@ -213,6 +194,7 @@ public class ManagePlantFragment extends Fragment {
                 refreshLayout.setRefreshing(false);
                 refreshLayout.setEnabled(false);
                 lastWateredLayout.setVisibility(View.GONE);
+                settingsButton.setVisibility(View.GONE);
                 deletePlantButton.setVisibility(View.GONE);
 
                 if(!pc.isNetworkAvailable()) {
@@ -229,6 +211,7 @@ public class ManagePlantFragment extends Fragment {
                 cancelButton.setVisibility(View.VISIBLE);
                 bDayLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.VISIBLE);
+                settingsButton.setVisibility(View.VISIBLE);
                 deletePlantButton.setVisibility(View.VISIBLE);
 
                 if(!pc.isNetworkAvailable()) {
@@ -236,11 +219,11 @@ public class ManagePlantFragment extends Fragment {
                     potIdEditText.setEnabled(false);
                 }
 
+                refreshLayout.setRefreshing(false);
+                refreshLayout.setEnabled(false);
                 if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
                 else {
                     moistureLayout.setVisibility(View.VISIBLE);
-                    refreshLayout.setRefreshing(false);
-                    refreshLayout.setEnabled(false);
                 }
 
                 break;
@@ -254,11 +237,15 @@ public class ManagePlantFragment extends Fragment {
                 lastWateredLayout.setVisibility(View.VISIBLE);
                 potIdLayout.setVisibility(View.GONE);
                 cancelButton.setVisibility(View.GONE);
+                settingsButton.setVisibility(View.GONE);
                 deletePlantButton.setVisibility(View.GONE);
                 if(plant.getBirthDate() == null) bDayLayout.setVisibility(View.GONE);
                 else bDayLayout.setVisibility(View.VISIBLE);
-                if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
-                else{
+                if(plant.getPotId().equals("")) {
+                    moistureLayout.setVisibility(View.GONE);
+                    refreshLayout.setRefreshing(false);
+                    refreshLayout.setEnabled(false);
+                } else{
                     moistureLayout.setVisibility(View.VISIBLE);
                     refreshLayout.setEnabled(true);
                 }
@@ -374,6 +361,76 @@ public class ManagePlantFragment extends Fragment {
         return "";
     }
 
+    RelativeLayout.OnClickListener setMoistureGraphVisibility = new RelativeLayout.OnClickListener() {
+        @Override
+        public void onClick(View v){
+            if (moistureGraphState == false) {
+                progressBar.setProgress(setMoistureGraph());
+                moistureGraph.setVisibility(View.VISIBLE);
+            } else moistureGraph.setVisibility(View.GONE);
+            moistureGraphState =! moistureGraphState;
+        }
+    };
+
+    /**
+     * Sets up the moisture graph and returns latest moisture value
+     */
+    private int setMoistureGraph(){
+        ArrayList<GraphData> moistureValues = pc.getMoistureLevels(plant); // Get moisture values here
+        int nbrValues = moistureValues.size();
+        moistureGraph = view.findViewById(R.id.moistureGraph);
+
+        int nbrValuesDisplayed = 5; //nbr values to display
+        ArrayList<Entry> entries = new ArrayList<>();
+
+        // Get reference value to use timestamp as a float value
+        long reference = moistureValues.get(nbrValues - nbrValuesDisplayed - 1).getDate();
+        for (int i= (nbrValues - nbrValuesDisplayed); i < nbrValues ; i++) { // get last values
+            // turn data into Entries for graph data
+            long date = moistureValues.get(i).getDate() - reference;
+            entries.add(new Entry(date, moistureValues.get(i).getValue()));
+        }
+
+        // Set Dataset
+        LineDataSet dataSet = new LineDataSet(entries, "Moisture Levels"); // add entries to dataset
+        dataSet.setDrawValues(false);
+        dataSet.setDrawFilled(true);
+        dataSet.setFillDrawable(getResources().getDrawable(R.drawable.graph_gradient));
+
+        // Set Graph with Dataset
+        LineData lineData = new LineData(dataSet);
+        moistureGraph.setData(lineData);
+        moistureGraph.invalidate(); // refresh chart
+
+        //Format Graph
+        moistureGraph.getDescription().setEnabled(false);
+        moistureGraph.getLegend().setEnabled(false);
+        moistureGraph.getAxisRight().setEnabled(false);
+        moistureGraph.setScaleEnabled(false);
+        moistureGraph.getData().setHighlightEnabled(false);
+        moistureGraph.setExtraOffsets(0, 0, 20, 0);
+
+        //Set X-Axis
+        XAxis xAxis = moistureGraph.getXAxis();
+        xAxis.setTextSize(8);
+        xAxis.setTextColor(getResources().getColor(R.color.hintColor));
+        //moistureGraph.setVisibleXRangeMaximum(nbrValues); //WISH THIS WORKED
+        //moistureGraph.setVisibleXRangeMinimum(nbrValues);
+        //moistureGraph.setVisibleXRange(1, 2);
+        xAxis.setLabelCount(nbrValuesDisplayed, true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter(new SimpleDateFormat("yy'/'MM'/'dd"), reference); // Set format here if updating at different intervals
+        xAxis.setValueFormatter(xAxisFormatter);
+
+        //Set Y-Axis
+        moistureGraph.animateY(1000, Easing.EasingOption.EaseOutBack);
+        moistureGraph.getAxisLeft().setAxisMaximum(100);
+        moistureGraph.getAxisLeft().setAxisMinimum(0);
+        moistureGraph.getAxisLeft().setTextColor(getResources().getColor(R.color.hintColor));
+
+        return moistureValues.get(nbrValues -1).getValue();
+    }
+
     ImageButton.OnClickListener clearDate = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -390,6 +447,18 @@ public class ManagePlantFragment extends Fragment {
             plant.setLastWatered(newDate);
             lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
 
+        }
+    };
+
+    Button.OnClickListener viewSettings = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            SettingsFragment settingsFragment = SettingsFragment.newInstance();
+            settingsFragment.setPlantId(plant.getId());
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frame_layout, settingsFragment,"findThisFragment")
+                    .addToBackStack(null)
+                    .commit();
         }
     };
 
@@ -445,64 +514,6 @@ public class ManagePlantFragment extends Fragment {
 
     public void setPlant(Plant plant){
         this.plant = plant;
-    }
-
-    /**
-     * Sets up the moisture graph
-     */
-    void setMoistureGraph(){
-
-        ArrayList<GraphData> moistureValues = pc.getMoistureLevels(plant); // Get moisture values here
-        int nbrValues = moistureValues.size();
-        moistureGraph = view.findViewById(R.id.moistureGraph);
-
-        int nbrValuesDisplayed = 5; //nbr values to display
-        ArrayList<Entry> entries = new ArrayList<>();
-
-        // Get reference value to use timestamp as a float value
-        long reference = moistureValues.get(nbrValues - nbrValuesDisplayed - 1).getDate();
-        for (int i= (nbrValues - nbrValuesDisplayed); i < nbrValues ; i++) { // get last values
-            // turn your data into Entries for graph data
-            long date = moistureValues.get(i).getDate() - reference;
-            entries.add(new Entry(date, moistureValues.get(i).getValue()));
-        }
-
-        // Set Dataset
-        LineDataSet dataSet = new LineDataSet(entries, "Moisture Levels"); // add entries to dataset
-        dataSet.setDrawValues(false);
-        dataSet.setDrawFilled(true);
-        dataSet.setFillDrawable(getResources().getDrawable(R.drawable.graph_gradient));
-
-        // Set Graph with Dataset
-        LineData lineData = new LineData(dataSet);
-        moistureGraph.setData(lineData);
-        moistureGraph.invalidate(); // refresh chart
-
-        //Format Graph
-        moistureGraph.getDescription().setEnabled(false);
-        moistureGraph.getLegend().setEnabled(false);
-        moistureGraph.getAxisRight().setEnabled(false);
-        moistureGraph.setScaleEnabled(false);
-        moistureGraph.getData().setHighlightEnabled(false);
-        moistureGraph.setExtraOffsets(0, 0, 20, 0);
-
-        //Set X-Axis
-        XAxis xAxis = moistureGraph.getXAxis();
-        xAxis.setTextSize(8);
-        xAxis.setTextColor(getResources().getColor(R.color.hintColor));
-        //moistureGraph.setVisibleXRangeMaximum(nbrValues); //WISH THIS WORKED
-        //moistureGraph.setVisibleXRangeMinimum(nbrValues);
-        //moistureGraph.setVisibleXRange(1, 2);
-        xAxis.setLabelCount(nbrValuesDisplayed, true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter(new SimpleDateFormat("yy'/'MM'/'dd"), reference); // Set format here if updating at different intervals
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        //Set Y-Axis
-        moistureGraph.animateY(1000, Easing.EasingOption.EaseOutBack);
-        moistureGraph.getAxisLeft().setAxisMaximum(100);
-        moistureGraph.getAxisLeft().setAxisMinimum(0);
-        moistureGraph.getAxisLeft().setTextColor(getResources().getColor(R.color.hintColor));
     }
 
     /**

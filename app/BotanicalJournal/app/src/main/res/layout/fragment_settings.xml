@@ -1,13 +1,84 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.smartpot.botanicaljournal.Views.SettingsFragment">
+    tools:context="com.smartpot.botanicaljournal.Views.SettingsFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/moistureIntervalLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Settings Fragment" />
+        android:layout_height="70dp"
+        android:gravity="center_vertical">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/moistureIntervalValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="false"
+            android:layout_alignStart="@+id/moistureIntervalLabel"
+            android:layout_below="@+id/moistureIntervalLabel"
+            android:layout_centerVertical="false"
+            android:text="30 mins" />
+
+        <TextView
+            android:id="@+id/moistureIntervalLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="false"
+            android:layout_marginLeft="20dp"
+            android:text="@string/MoistureIntervalLabel"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:contentDescription="@string/borderDesc"
+        android:src="@color/clickedMenuItem" />
+
+    <RelativeLayout
+        android:id="@+id/potStatusLayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:gravity="center_vertical">
+
+        <Switch
+            android:id="@+id/potStatusSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/potStatusLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="false"
+            android:layout_marginLeft="20dp"
+            android:text="@string/runningStatusLabel"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/potStatusValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="false"
+            android:layout_alignStart="@+id/potStatusLabel"
+            android:layout_below="@+id/potStatusLabel"
+            android:layout_centerVertical="false"
+            android:text="Off" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/border2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:contentDescription="@string/borderDesc"
+        android:src="@color/clickedMenuItem" />
+</LinearLayout>

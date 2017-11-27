@@ -5,6 +5,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ public class PlantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_plant, container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Botanical Journal"); // Set title of navigation bar
 
         // Initialize Database Controller
         pc = new PlantController(getContext());

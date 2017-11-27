@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.smartpot.botanicaljournal.Helpers.MoistureInterval;
 import com.smartpot.botanicaljournal.Models.DBHandler;
 import com.smartpot.botanicaljournal.Models.GraphData;
 import com.smartpot.botanicaljournal.Models.Plant;
@@ -162,21 +163,31 @@ public class PlantController {
     }
 
     public boolean updateLastWatered(Plant plant, Date date) {
-
         handler.addLastWateredTimeForPlant(plant, date);
-
         return true;
     }
 
     public ArrayList<GraphData> getMoistureLevels(Plant plant) {
-
         return handler.getMoistureLevels(plant.getId());
-
     }
 
     public int getMostRecentMoistureValue(Plant plant) {
-
         return handler.getMostRecentMoistureValue(plant.getId());
+    }
 
+    public void setMoistureInterval(long id, int interval) {
+        handler.setMoistureInterval(id, interval);
+    }
+
+    public MoistureInterval getMoistureInterval(long id) {
+        return handler.getMoistureInterval(id);
+    }
+
+    public void setPotStatus(long id, boolean status) {
+        handler.setPotStatus(id, status);
+    }
+
+    public boolean getPotStatus(long id) {
+        return handler.getPotStatus(id);
     }
 }

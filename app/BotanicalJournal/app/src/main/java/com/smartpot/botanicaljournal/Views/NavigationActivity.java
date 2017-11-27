@@ -95,10 +95,6 @@ public class NavigationActivity extends AppCompatActivity
             managePlantFragment.setPlant(new Plant());
             transaction.replace(R.id.frame_layout, managePlantFragment).addToBackStack(null).commit();
         }
-        else if (id == R.id.settings) {
-            getSupportActionBar().setTitle("Settings");
-            transaction.replace(R.id.frame_layout, SettingsFragment.newInstance()).addToBackStack(null).commit();
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
