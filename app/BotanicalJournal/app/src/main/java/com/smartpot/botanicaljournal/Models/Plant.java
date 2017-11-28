@@ -48,6 +48,10 @@ public class Plant {
         this.notes = notes;
     }
 
+    public Plant(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

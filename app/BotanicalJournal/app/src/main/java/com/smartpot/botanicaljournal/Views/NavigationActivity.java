@@ -26,6 +26,7 @@ import com.smartpot.botanicaljournal.Models.Plant;
 import com.smartpot.botanicaljournal.Helpers.PlantViewState;
 import com.smartpot.botanicaljournal.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class NavigationActivity extends AppCompatActivity
@@ -41,16 +42,13 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, DataRetriever.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
 
         pc = new PlantController(this);
+
+        setupAlarms();
 
         plantCountTextView = navigationView.getHeaderView(0).findViewById(R.id.plantCountTextView);
         updatePlantCount();
@@ -84,6 +82,27 @@ public class NavigationActivity extends AppCompatActivity
         transaction.replace(R.id.frame_layout, PlantFragment.newInstance());
         transaction.commit();
     }
+
+    public final static String ALARM_POT_ID = "pot_id";
+    public final static String ALARM_PLANT_ID = "plant_id";
+
+    private void setupAlarms() {
+        ArrayList<Plant> plants = pc.getPlants();
+
+        for(Plant plant : plants) {
+            if (!plant.getPotId().equals("")) {
+                Log.i("TAG", "Setting Alarm For: " + plant.getPotId());
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(this, DataRetriever.class);
+                intent.putExtra(ALARM_POT_ID, plant.getPotId());
+                intent.putExtra(ALARM_PLANT_ID, plant.getId());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+                alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+            }
+        }
+
+    }
+
 
     @Override
     public void onBackPressed() {

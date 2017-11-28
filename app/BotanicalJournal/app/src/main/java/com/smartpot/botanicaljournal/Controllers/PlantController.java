@@ -167,5 +167,9 @@ public class PlantController {
         return true;
     }
 
+    public void addMoistureLevelForPlant(long plantId, int value) {
+        handler.addMoistureLevelForPlant(new Plant(plantId), value);
+    }
+
 
 }
