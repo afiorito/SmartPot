@@ -18,6 +18,7 @@ public class Plant {
     private String notes;
     private Date lastWatered;
     private int moistureLevel;
+    private int waterLevel;
     private String imagePath;
 
     private MoistureInterval moistureInterval;
@@ -29,7 +30,7 @@ public class Plant {
     }
 
     public Plant(long id, String name, String phylogeny, Date birthDate,
-                 String notes, Date lastWatered, int moistureLevel, String imagePath, String potId,
+                 String notes, Date lastWatered, int moistureLevel, int waterLevel, String imagePath, String potId,
                     MoistureInterval moistureInterval, boolean potStatus) {
         this.id = id;
         this.name = name;
@@ -38,6 +39,7 @@ public class Plant {
         this.notes = notes;
         this.lastWatered = lastWatered;
         this.moistureLevel = moistureLevel;
+        this.waterLevel = waterLevel;
         if (potId == null)
             this.potId = "";
         else
@@ -78,6 +80,9 @@ public class Plant {
     public int getMoistureLevel() {
         return moistureLevel;
     }
+    public int getWaterLevel() {
+        return moistureLevel;
+    }
     public String getPhylogeny() {
         return phylogeny;
     }
@@ -109,6 +114,9 @@ public class Plant {
         this.lastWatered = lastWatered;
     }
     public void setMoistureLevel(int moistureLevel) {
+        this.moistureLevel = moistureLevel;
+    }
+    public void setWaterLevel(int moistureLevel) {
         this.moistureLevel = moistureLevel;
     }
     public void setImagePath(String imagePath) {

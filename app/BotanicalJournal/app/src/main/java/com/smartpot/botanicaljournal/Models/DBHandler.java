@@ -45,6 +45,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COL_PLANT_NOTES = "notes";
     private static final String COL_PLANT_IMAGE = "image";
     private static final String COL_PLANT_POT_ID = "potId";
+    private static final String COL_PLANT_MOISTURE_LEVEL = "moisture_level";
+    private static final String COL_PLANT_WATER_LEVEL = "water_level";
     private static final String COL_PLANT_MOISTURE_INTERVAL = "moisture_interval";
     private static final String COL_PLANT_POT_STATUS = "pot_status";
 
@@ -74,6 +76,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COL_PLANT_IMAGE + " TEXT,"
                 + COL_PLANT_POT_ID + " TEXT,"
                 + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now')),"
+                + COL_PLANT_MOISTURE_LEVEL + " INTEGER,"
+                + COL_PLANT_WATER_LEVEL + " INTEGER,"
                 + COL_PLANT_MOISTURE_INTERVAL + " INTEGER,"
                 + COL_PLANT_POT_STATUS + " INTEGER"
                 + ");";
@@ -179,13 +183,14 @@ public class DBHandler extends SQLiteOpenHelper {
             Date birthDate = date == 0 ? null : new Date(date);
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
             Date lastWatered = getMostRecentLastWateredValue(id);
+            int waterLevel = getMostRecentLevelValue(id);
             int moistureLevel = getMostRecentMoistureValue(id);
             String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
             String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
             int interval = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_INTERVAL));
             MoistureInterval moistureInterval = MoistureInterval.values()[interval];
             boolean potStatus = c.getInt(c.getColumnIndex(COL_PLANT_POT_STATUS)) > 0;
-            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel, imagePath, potId,
+            plants.add(new Plant(id, name, phylogeny, birthDate, notes, lastWatered, moistureLevel, waterLevel, imagePath, potId,
                     moistureInterval, potStatus));
             c.moveToNext();
         }
@@ -296,6 +301,25 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
+    public int getMostRecentLevelValue(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        int waterLevel = -1;
+
+        String query = "SELECT " + COL_PLANT_WATER_LEVEL + " FROM " + TABLE_PLANTS
+                + " WHERE " + COL_ID + " = " + id + ";";
+
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()) {
+            waterLevel = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_LEVEL));
+        }
+
+        c.close();
+        db.close();
+
+        return waterLevel;
+
+    }
 
     public void deletePlant(long id) {
         SQLiteDatabase db = getWritableDatabase();

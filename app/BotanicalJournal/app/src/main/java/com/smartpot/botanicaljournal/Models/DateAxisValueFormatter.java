@@ -29,15 +29,11 @@ public class DateAxisValueFormatter implements IAxisValueFormatter {
     public String getFormattedValue(float value, AxisBase axis) {
         // convertedTimestamp = originalTimestamp - referenceTimestamp
         long convertedTimestamp = (long) value;
-        Log.d("DateAxisValueFormatter", "Called getFormattedValue with Value: " + Long.toString(convertedTimestamp));
         // Retrieve original timestamp
         long originalTimestamp = referenceTimestamp + convertedTimestamp;
 
-        Log.d("DateAxisValueFormatter", "Original Timestamp: " + Long.toString(originalTimestamp));
-
         // Convert timestamp to format
         mDate = new Date(originalTimestamp);
-        Log.d("DateAxisValueFormatter", "FormattedDate: " + (mDataFormat.format(mDate)));
         return mDataFormat.format(mDate);
     }
 

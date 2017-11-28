@@ -120,11 +120,8 @@ public class ManagePlantFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
-                        if (moistureValues.size() > 0) {
+                        if (moistureValues.size() > 0)
                             setMoistureGraph(moistureValues);
-                            int value = pc.getMostRecentMoistureValue(plant);
-                            Log.d("ManagePlantFragment", "Progress Bar Value: " + Integer.toString(value));
-                        }
                         refreshLayout.setRefreshing(false);
                     }
                 }
@@ -520,6 +517,7 @@ public class ManagePlantFragment extends Fragment {
         plantNameField.setText(plant.getName());
         plantPhylogenyField.setText(plant.getPhylogeny());
         progressBar.setProgress(plant.getMoistureLevel());
+        levelBar.setProgress(plant.getWaterLevel());
         String date = formatDate(plant.getBirthDate());
         bDayField.setText(date.equals("") ? "Enter Birthday" : date);
         lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));
