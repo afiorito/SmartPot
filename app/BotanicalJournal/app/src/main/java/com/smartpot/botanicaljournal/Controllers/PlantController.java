@@ -13,7 +13,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.smartpot.botanicaljournal.Helpers.MoistureInterval;
 import com.smartpot.botanicaljournal.Models.DBHandler;
-import com.smartpot.botanicaljournal.Models.GraphData;
+import com.smartpot.botanicaljournal.Models.Data;
 import com.smartpot.botanicaljournal.Models.Plant;
 import com.smartpot.botanicaljournal.Helpers.VolleyCallback;
 import com.smartpot.botanicaljournal.Helpers.VolleyResponse;
@@ -229,7 +229,7 @@ public class PlantController {
         return true;
     }
 
-    public ArrayList<GraphData> getMoistureLevels(Plant plant) {
+    public ArrayList<Data> getMoistureLevels(Plant plant) {
         return handler.getMoistureLevels(plant.getId());
     }
 

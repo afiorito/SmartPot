@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Random;
 
 /**
@@ -82,7 +81,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String createLastWateredTable =     "CREATE TABLE " + TABLE_LAST_WATERED + "("
                 + COL_ID + " INTEGER PRIMARY KEY,"
                 + COL_PLANT_ID + " INTEGER,"
-                + COL_WATERED_VALUE + " DATETIME,"
+                + COL_WATERED_VALUE + " INTEGER,"
                 + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now')),"
                 + "CONSTRAINT " + FK_CONSTRAINT_PLANTS
                 + " FOREIGN KEY(" + COL_PLANT_ID + ")"
@@ -224,43 +223,51 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<GraphData> getMoistureLevels(long id) {
+    public ArrayList<Data> getMoistureLevels(long id) {
 
-        //Access Database and reset values for testing
         SQLiteDatabase db = getReadableDatabase();
-        db.delete(TABLE_MOISTURE_LEVEL, COL_PLANT_ID + "=?", new String[] {String.valueOf(id)} );
-        db.close();
 
-        // Generate Random Dates and values
-        ArrayList<GraphData> moistureValues = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 10 ; i++) {
-            Date date = calendar.getTime();
-            calendar.add(Calendar.DATE, 1);
-            Random rnd = new Random();
-            addMoistureLevelForPlant(id, date.getTime(), rnd.nextInt(100) + 1 ); //add values to database
+        // Generate Random Dates and values for testing
+//        db.delete(TABLE_MOISTURE_LEVEL, COL_PLANT_ID + "=?", new String[] {String.valueOf(id)} );
+//        db.close();
+//        Calendar calendar = Calendar.getInstance();
+//        for (int i = 0; i < 10 ; i++) {
+//            Date date = calendar.getTime();
+//            calendar.add(Calendar.DATE, 1);
+//            Random rnd = new Random();
+//            addMoistureLevelForPlant(id, date.getTime(), rnd.nextInt(100) + 1 ); //add values to database
+//
+//            DateFormat mDataFormat = new SimpleDateFormat("yyyy'/'MM'/'dd");
+//            Log.d("getMoistureValue", "Added date: " + mDataFormat.format(date));
+//        }
+//        db = getReadableDatabase();
+        // End of testing
 
-            DateFormat mDataFormat = new SimpleDateFormat("yyyy'/'MM'/'dd");
-            Log.d("getMoistureValue", "Added date: " + mDataFormat.format(date));
-        }
-
-        db = getReadableDatabase();
-        String query = "SELECT value, created_at FROM " + TABLE_MOISTURE_LEVEL
-                + " WHERE plant_id = " + id
+        String query = "SELECT * FROM " + TABLE_MOISTURE_LEVEL
+                + " WHERE plant_id = " + id + " ORDER BY id DESC LIMIT 5"
                 + ";";
 
         Cursor c = db.rawQuery(query, null);
-        c.moveToFirst();
 
-        while (!c.isAfterLast()) {
+        Log.d("getMoistureValue", "Made quere");
+
+        c.moveToLast();
+
+        ArrayList<Data> moistureValues = new ArrayList<>();
+        while (!c.isBeforeFirst()) {
             long date = c.getLong(c.getColumnIndex(COL_CREATED_AT));
             int moistureValue = c.getInt(c.getColumnIndex(COL_MOISTURE_VALUE));
-            moistureValues.add(new GraphData(date, moistureValue));
-            c.moveToNext();
+            moistureValues.add(new Data(date, moistureValue));
+            Log.d("getMoistureValue", "added value");
+            c.moveToPrevious();
         }
+
+        Log.d("getMoistureValue", "closed");
 
         c.close();
         db.close();
+
+        Log.d("getMoistureValue", "moisture values in database: " + Integer.toString(moistureValues.size()));
 
         return moistureValues;
 

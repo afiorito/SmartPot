@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,7 +36,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.smartpot.botanicaljournal.Helpers.DisplayMode;
 import com.smartpot.botanicaljournal.Models.DateAxisValueFormatter;
-import com.smartpot.botanicaljournal.Models.GraphData;
+import com.smartpot.botanicaljournal.Models.Data;
 import com.smartpot.botanicaljournal.Models.Plant;
 import com.smartpot.botanicaljournal.Controllers.PlantController;
 import com.smartpot.botanicaljournal.Helpers.PlantViewState;
@@ -50,6 +49,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
@@ -71,6 +71,7 @@ public class ManagePlantFragment extends Fragment {
     private ProfileField plantNameField;
     private ProfileField plantPhylogenyField;
     private ProgressBar progressBar;
+    private ProgressBar levelBar;
     private LineChart moistureGraph;
     private ProfileField lastWateredField;
     private EditText notesEditText;
@@ -113,18 +114,18 @@ public class ManagePlantFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_manage_plant, container, false);
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        refreshLayout = view.findViewById(R.id.swiperefresh);
         refreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-
-                        setMoistureGraph();
-                        int value = pc.getMostRecentMoistureValue(plant);
-                        Log.d("ManagePlantFragment", "Progress Bar Value: " + Integer.toString(value));
-                        progressBar.setProgress(pc.getMostRecentMoistureValue(plant)); //get latest moisture level
+                        ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
+                        if (moistureValues.size() > 0) {
+                            setMoistureGraph(moistureValues);
+                            int value = pc.getMostRecentMoistureValue(plant);
+                            Log.d("ManagePlantFragment", "Progress Bar Value: " + Integer.toString(value));
+                        }
                         refreshLayout.setRefreshing(false);
-
                     }
                 }
         );
@@ -140,12 +141,13 @@ public class ManagePlantFragment extends Fragment {
         // Get References to views
         lastWateredLayout = view.findViewById(R.id.lastWateredLayout);
         moistureLayout = view.findViewById(R.id.moistureLayout);
-        moistureLayout.setOnClickListener(setMoistureGraphVisibility);
+        moistureLayout.setOnClickListener(setMoistureLayout);
         potIdLayout = view.findViewById(R.id.potIdLayout);
         bDayLayout = view.findViewById(R.id.bDayLayout);
         plantNameField = view.findViewById(R.id.plantName);
         plantPhylogenyField = view.findViewById(R.id.plantPhylogeny);
         progressBar = view.findViewById(R.id.moistureBar);
+        levelBar = view.findViewById(R.id.levelBar);
         lastWateredField = view.findViewById(R.id.lastWatered);
         notesEditText = view.findViewById(R.id.notesEditText);
         potIdEditText = view.findViewById(R.id.potIdEditText);
@@ -221,6 +223,7 @@ public class ManagePlantFragment extends Fragment {
 
                 refreshLayout.setRefreshing(false);
                 refreshLayout.setEnabled(false);
+                moistureLayout.setClickable(false);
                 if(plant.getPotId().equals("")) {
                     moistureLayout.setVisibility(View.GONE);
                     updateLastWateredButton.setText("Update");
@@ -247,12 +250,16 @@ public class ManagePlantFragment extends Fragment {
                 deletePlantButton.setVisibility(View.GONE);
                 if(plant.getBirthDate() == null) bDayLayout.setVisibility(View.GONE);
                 else bDayLayout.setVisibility(View.VISIBLE);
+
                 if(plant.getPotId().equals("")) {
                     moistureLayout.setVisibility(View.GONE);
                     refreshLayout.setRefreshing(false);
                     refreshLayout.setEnabled(false);
                     updateLastWateredButton.setText("Update");
                 } else{
+                    moistureLayout.setClickable(true);
+                    moistureLayout.setOnClickListener(setMoistureLayout);
+                    Log.d("ManagePlantFragment", "setMoistureLayoutClickable");
                     moistureLayout.setVisibility(View.VISIBLE);
                     refreshLayout.setEnabled(true);
                     updateLastWateredButton.setText("Water");
@@ -369,35 +376,42 @@ public class ManagePlantFragment extends Fragment {
         return "";
     }
 
-    RelativeLayout.OnClickListener setMoistureGraphVisibility = new RelativeLayout.OnClickListener() {
+    RelativeLayout.OnClickListener setMoistureLayout = new RelativeLayout.OnClickListener() {
         @Override
         public void onClick(View v){
-            if (moistureGraphState == false) {
-                progressBar.setProgress(setMoistureGraph());
-                moistureGraph.setVisibility(View.VISIBLE);
-            } else moistureGraph.setVisibility(View.GONE);
-            moistureGraphState =! moistureGraphState;
+            Log.d("ManagePlantFragment", "setMoistureLayout");
+            ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
+            Log.d("ManagePlantFragment", Integer.toString(moistureValues.size()));
+            if (moistureValues.size() > 0) {
+                if (moistureGraphState == false) {
+                        Log.d("ManagePlantFragment", "setMoistureLayout, starting graph");
+                        setMoistureGraph(moistureValues);
+                        moistureGraph.setVisibility(View.VISIBLE);
+                } else {
+                        moistureGraph.setVisibility(View.GONE);
+                }
+                moistureGraphState = !moistureGraphState;
+            }
         }
     };
 
     /**
      * Sets up the moisture graph and returns latest moisture value
      */
-    private int setMoistureGraph(){
-        ArrayList<GraphData> moistureValues = pc.getMoistureLevels(plant); // Get moisture values here
+    private void setMoistureGraph(ArrayList<Data> moistureValues){
         int nbrValues = moistureValues.size();
         moistureGraph = view.findViewById(R.id.moistureGraph);
 
-        int nbrValuesDisplayed = 5; //nbr values to display
         ArrayList<Entry> entries = new ArrayList<>();
 
         // Get reference value to use timestamp as a float value
-        long reference = moistureValues.get(nbrValues - nbrValuesDisplayed - 1).getDate();
-        for (int i= (nbrValues - nbrValuesDisplayed); i < nbrValues ; i++) { // get last values
-            // turn data into Entries for graph data
-            long date = moistureValues.get(i).getDate() - reference;
+        long date;
+        long reference = moistureValues.get(0).getValue();
+        for (int i = 0; i < nbrValues; i++) { // get last values
+            date = moistureValues.get(i).getDate() - reference;
             entries.add(new Entry(date, moistureValues.get(i).getValue()));
         }
+
 
         // Set Dataset
         LineDataSet dataSet = new LineDataSet(entries, "Moisture Levels"); // add entries to dataset
@@ -425,7 +439,7 @@ public class ManagePlantFragment extends Fragment {
         //moistureGraph.setVisibleXRangeMaximum(nbrValues); //WISH THIS WORKED
         //moistureGraph.setVisibleXRangeMinimum(nbrValues);
         //moistureGraph.setVisibleXRange(1, 2);
-        xAxis.setLabelCount(nbrValuesDisplayed, true);
+        xAxis.setLabelCount(nbrValues, true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter(new SimpleDateFormat("yy'/'MM'/'dd"), reference); // Set format here if updating at different intervals
         xAxis.setValueFormatter(xAxisFormatter);
@@ -435,8 +449,6 @@ public class ManagePlantFragment extends Fragment {
         moistureGraph.getAxisLeft().setAxisMaximum(100);
         moistureGraph.getAxisLeft().setAxisMinimum(0);
         moistureGraph.getAxisLeft().setTextColor(getResources().getColor(R.color.hintColor));
-
-        return moistureValues.get(nbrValues -1).getValue();
     }
 
     ImageButton.OnClickListener clearDate = new ImageButton.OnClickListener() {

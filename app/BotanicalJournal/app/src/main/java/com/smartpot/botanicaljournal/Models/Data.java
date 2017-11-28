@@ -6,13 +6,13 @@ import java.util.Date;
  * Created by MG on 2017-11-20.
  */
 
-public class GraphData {
+public class Data {
     long date;
     int value;
 
-    GraphData(){}
+    Data(){}
 
-    GraphData(long date, int value){
+    Data(long date, int value){
         this.date =date;
         this.value = value;
     }
