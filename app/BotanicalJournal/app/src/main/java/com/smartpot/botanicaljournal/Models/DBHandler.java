@@ -76,7 +76,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COL_PLANT_POT_ID + " TEXT,"
                 + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now')),"
                 + COL_PLANT_MOISTURE_INTERVAL + " INTEGER,"
-                + COL_PLANT_POT_STATUS + " BOOLEAN"
+                + COL_PLANT_POT_STATUS + " INTEGER"
                 + ");";
 
         String createLastWateredTable =     "CREATE TABLE " + TABLE_LAST_WATERED + "("
@@ -357,7 +357,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void setPotStatus(long id, boolean status) {
+    public void setPotStatus(long id, int status) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();

@@ -221,9 +221,15 @@ public class ManagePlantFragment extends Fragment {
 
                 refreshLayout.setRefreshing(false);
                 refreshLayout.setEnabled(false);
-                if(plant.getPotId().equals("")) moistureLayout.setVisibility(View.GONE);
+                if(plant.getPotId().equals("")) {
+                    moistureLayout.setVisibility(View.GONE);
+                    updateLastWateredButton.setText("Update");
+                    settingsButton.setVisibility(View.GONE);
+                }
                 else {
                     moistureLayout.setVisibility(View.VISIBLE);
+                    updateLastWateredButton.setText("Water");
+                    settingsButton.setVisibility(View.VISIBLE);
                 }
 
                 break;
@@ -245,9 +251,11 @@ public class ManagePlantFragment extends Fragment {
                     moistureLayout.setVisibility(View.GONE);
                     refreshLayout.setRefreshing(false);
                     refreshLayout.setEnabled(false);
+                    updateLastWateredButton.setText("Update");
                 } else{
                     moistureLayout.setVisibility(View.VISIBLE);
                     refreshLayout.setEnabled(true);
+                    updateLastWateredButton.setText("Water");
                 }
 
                 addImage.setVisibility(View.GONE);
@@ -454,7 +462,7 @@ public class ManagePlantFragment extends Fragment {
         @Override
         public void onClick(View view) {
             SettingsFragment settingsFragment = SettingsFragment.newInstance();
-            settingsFragment.setPlantId(plant.getId());
+            settingsFragment.setPlant(plant);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frame_layout, settingsFragment,"findThisFragment")
                     .addToBackStack(null)

@@ -48,10 +48,14 @@ public class PlantController {
 
     public void isValidSmartPot(final String potId, final VolleyResponse callback) {
         // use for production, don't use this url for testing
-        //        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
+        if(!isNetworkAvailable()) {
+            callback.onResponse(false);
+            return;
+        }
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "https://jsonplaceholder.typicode.com/posts/1", null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
@@ -64,7 +68,7 @@ public class PlantController {
                             }
                         } catch (Exception e) {
                             // change this to true if you want potId to be valid
-                            callback.onResponse(true);
+                            callback.onResponse(false);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -78,12 +82,10 @@ public class PlantController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void updatePlant(final int potIndex, final String potId, final VolleyCallback callback)
-    {
+    public void updatePlant(final int potIndex, final String potId, final VolleyCallback callback) {
         // URL to Access API for specific Plant
         // use this in production
-        // String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
-        String url = "https://jsonplaceholder.typicode.com/posts/1";
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
 
         //Make JSON Request
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -121,6 +123,62 @@ public class PlantController {
                     }
                 });
 
+        requestQueue.add(jsObjRequest);
+    }
+
+    private void toggleSmartPot(String potId, int running) {
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId + "/running";
+
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("running", running);
+        } catch(Exception e) {
+
+        }
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.PUT, url, body, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("TAG", response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("TAG", error.getMessage());
+
+                    }
+                });
+        requestQueue.add(jsObjRequest);
+    }
+
+    private void updateWatering(String potId) {
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId + "/watering";
+
+        final JSONObject body = new JSONObject();
+        try {
+            body.put("watering", 1);
+        } catch(Exception e) {
+
+        }
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.PUT, url, body, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("TAG", response.toString());
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("TAG", error.getMessage());
+
+                    }
+                });
         requestQueue.add(jsObjRequest);
     }
 
@@ -163,7 +221,11 @@ public class PlantController {
     }
 
     public boolean updateLastWatered(Plant plant, Date date) {
-        handler.addLastWateredTimeForPlant(plant, date);
+        if(!plant.getPotId().equals("")) {
+            updateWatering(plant.getPotId());
+        } else {
+            handler.addLastWateredTimeForPlant(plant, date);
+        }
         return true;
     }
 
@@ -183,8 +245,9 @@ public class PlantController {
         return handler.getMoistureInterval(id);
     }
 
-    public void setPotStatus(long id, boolean status) {
-        handler.setPotStatus(id, status);
+    public void setPotStatus(Plant p, int status) {
+        toggleSmartPot(p.getPotId(), status);
+        handler.setPotStatus(p.getId(), status);
     }
 
     public boolean getPotStatus(long id) {

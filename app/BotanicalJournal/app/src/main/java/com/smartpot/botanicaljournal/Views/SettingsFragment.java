@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import com.smartpot.botanicaljournal.Controllers.PlantController;
+import com.smartpot.botanicaljournal.Helpers.MoistureInterval;
+import com.smartpot.botanicaljournal.Models.Plant;
 import com.smartpot.botanicaljournal.R;
 
 public class SettingsFragment extends Fragment {
@@ -20,7 +22,7 @@ public class SettingsFragment extends Fragment {
     View view;
     private PlantController pc;
 
-    long plantId;
+    private Plant plant;
 
     RelativeLayout moistureIntervalLayout;
     TextView moistureIntervalValue;
@@ -55,7 +57,7 @@ public class SettingsFragment extends Fragment {
         moistureIntervalLayout = view.findViewById(R.id.moistureIntervalLayout);
         moistureIntervalLayout.setOnClickListener(setMoistureInterval);
         moistureIntervalValue = view.findViewById(R.id.moistureIntervalValue);
-        switch(pc.getMoistureInterval(plantId)){
+        switch(pc.getMoistureInterval(plant.getId())){
             case THIRTYMINS: moistureIntervalValue.setText(intervals[0]); break;
             case HOURLY: moistureIntervalValue.setText(intervals[1]); break;
             case DAILY: moistureIntervalValue.setText(intervals[2]); break;
@@ -64,7 +66,7 @@ public class SettingsFragment extends Fragment {
         }
         potStatusSwitch = view.findViewById(R.id.potStatusSwitch);
         potStatusValue = view.findViewById(R.id.potStatusValue);
-        if (pc.getPotStatus(plantId)) {
+        if (pc.getPotStatus(plant.getId())) {
             potStatusSwitch.setChecked(true);
             potStatusValue.setText("On");
         }else{
@@ -82,9 +84,12 @@ public class SettingsFragment extends Fragment {
         public void onClick(View v){
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext()); // Create dialog to chose moisture interval
             builder.setTitle("Set the Moisture Data Interval");
-            builder.setSingleChoiceItems(intervals, 4, new DialogInterface.OnClickListener() {
+
+            MoistureInterval moistureInterval = pc.getMoistureInterval(plant.getId());
+
+            builder.setSingleChoiceItems(intervals, moistureInterval.ordinal(), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int index) {
-                    pc.setMoistureInterval(plantId, index);
+                    pc.setMoistureInterval(plant.getId(), index);
                     moistureIntervalValue.setText(intervals[index]);
                 }
             });
@@ -98,9 +103,9 @@ public class SettingsFragment extends Fragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked == true) potStatusValue.setText("On");
             else potStatusValue.setText("Off");
-            pc.setPotStatus(plantId, isChecked);
+            pc.setPotStatus(plant, isChecked ? 1 : 0);
         }
     };
 
-    void setPlantId(long plantId){this.plantId = plantId;}
+    void setPlant(Plant plant){this.plant = plant;}
 }
