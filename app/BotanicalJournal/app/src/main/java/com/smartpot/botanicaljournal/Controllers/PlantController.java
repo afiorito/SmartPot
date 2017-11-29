@@ -48,7 +48,7 @@ public class PlantController {
 
     public void isValidSmartPot(final String potId, final VolleyResponse callback) {
         // use for production, don't use this url for testing
-        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/pot1";
+        String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
         if(!isNetworkAvailable()) {
             callback.onResponse(false);
             return;
@@ -82,7 +82,7 @@ public class PlantController {
         requestQueue.add(jsObjRequest);
     }
 
-    public void updatePlant(final int potIndex, final String potId, final VolleyCallback callback) {
+    public void updatePlant(final String potId, final VolleyCallback callback) {
         // URL to Access API for specific Plant
         // use this in production
         String url = "https://qrawi86kkd.execute-api.us-east-1.amazonaws.com/prod/smartpot/" + potId;
@@ -103,16 +103,17 @@ public class PlantController {
                                 Date time = new Date(Long.valueOf(response.getString("lastWatered")));
                                 //Get the Moisture Level
                                 int moistureLevel = response.getInt("moisture");
+                                int waterLevel = response.getInt("waterLevel");
 
-                                callback.onResponse(true, potId, moistureLevel, time);
+                                callback.onResponse(true, potId, moistureLevel, waterLevel, time);
                             }
                             else {
-                                callback.onResponse(false, potId, -1, null);
+                                callback.onResponse(false, potId, -1, -1, null);
                             }
                         }
                         catch (Exception e)
                         {
-                            callback.onResponse(false, potId, -1, null);
+                            callback.onResponse(false, potId, -1, -1, null);
                         }
                     }
                 }, new Response.ErrorListener() {

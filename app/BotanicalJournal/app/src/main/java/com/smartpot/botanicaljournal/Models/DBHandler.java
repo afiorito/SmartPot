@@ -47,6 +47,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COL_PLANT_POT_ID = "potId";
     private static final String COL_PLANT_MOISTURE_LEVEL = "moisture_level";
     private static final String COL_PLANT_WATER_LEVEL = "water_level";
+    private static final String COL_PLANT_LAST_WATERED = "last_watered";
     private static final String COL_PLANT_MOISTURE_INTERVAL = "moisture_interval";
     private static final String COL_PLANT_POT_STATUS = "pot_status";
 
@@ -78,11 +79,12 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COL_CREATED_AT + " DATETIME DEFAULT (strftime('%s', 'now')),"
                 + COL_PLANT_MOISTURE_LEVEL + " INTEGER,"
                 + COL_PLANT_WATER_LEVEL + " INTEGER,"
+                + COL_PLANT_LAST_WATERED + " DATETIME,"
                 + COL_PLANT_MOISTURE_INTERVAL + " INTEGER,"
                 + COL_PLANT_POT_STATUS + " INTEGER"
                 + ");";
 
-        String createLastWateredTable =     "CREATE TABLE " + TABLE_LAST_WATERED + "("
+        String createLastWateredTable = "CREATE TABLE " + TABLE_LAST_WATERED + "("
                 + COL_ID + " INTEGER PRIMARY KEY,"
                 + COL_PLANT_ID + " INTEGER,"
                 + COL_WATERED_VALUE + " INTEGER,"
@@ -159,6 +161,11 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         cv.put(COL_PLANT_NOTES, plant.getNotes());
         cv.put(COL_PLANT_POT_ID, plant.getPotId());
+        cv.put(COL_PLANT_MOISTURE_LEVEL, plant.getMoistureLevel());
+        if(plant.getLastWatered() != null) {
+            cv.put(COL_PLANT_LAST_WATERED, plant.getLastWatered().getTime());
+        }
+        cv.put(COL_PLANT_WATER_LEVEL, plant.getWaterLevel());
 
         db.update(TABLE_PLANTS, cv, COL_ID + " = ?", new String[] {String.valueOf(plant.getId())});
     }
@@ -179,12 +186,13 @@ public class DBHandler extends SQLiteOpenHelper {
             long id = c.getLong(c.getColumnIndex(COL_ID));
             String name = c.getString(c.getColumnIndex(COL_PLANT_NAME));
             String phylogeny = c.getString(c.getColumnIndex(COL_PLANT_PHYLO));
-            long date = c.getLong(c.getColumnIndex(COL_PLANT_BIRTH_DATE));
-            Date birthDate = date == 0 ? null : new Date(date);
+            long bdate = c.getLong(c.getColumnIndex(COL_PLANT_BIRTH_DATE));
+            Date birthDate = bdate == 0 ? null : new Date(bdate);
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
-            Date lastWatered = getMostRecentLastWateredValue(id);
+            long date = c.getLong(c.getColumnIndex(COL_PLANT_LAST_WATERED));
+            Date lastWatered = date == 0 ? null : new Date(date);
             int waterLevel = c.getInt(c.getColumnIndex(COL_PLANT_WATER_LEVEL));
-            int moistureLevel = getMostRecentMoistureValue(id);
+            int moistureLevel = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_LEVEL));
             String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
             String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
             int interval = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_INTERVAL));

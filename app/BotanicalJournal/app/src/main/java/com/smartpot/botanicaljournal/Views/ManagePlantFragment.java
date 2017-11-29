@@ -120,6 +120,18 @@ public class ManagePlantFragment extends Fragment {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        if (!plant.getPotId().equals("")) {
+                            pc.updatePlant(plant.getPotId(), new VolleyCallback() {
+                                @Override
+                                public void onResponse(boolean success, String potId, int moistureLevel, int waterLevel, Date time) {
+                                    if(success) {
+                                        plant.setMoistureLevel(moistureLevel);
+                                        plant.setWaterLevel(waterLevel);
+                                        plant.setLastWatered(time);
+                                    }
+                                }
+                            });
+                        }
                         ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
                         if (moistureValues.size() > 0)
                             setMoistureGraph(pc.getMoistureLevels(plant));
@@ -296,20 +308,26 @@ public class ManagePlantFragment extends Fragment {
                     case EDITPLANT:
                         final String potId = potIdEditText.getText().toString();
                         loadingBar.setVisibility(View.VISIBLE);
-                        pc.isValidSmartPot(potId, new VolleyCallback() {
-                            @Override
-                            public void onResponse(boolean success) {
-                                if(success) plant.setPotId(potId);
-                                else {
-                                    Toast.makeText(getContext(), "Pot ID is not valid.", Toast.LENGTH_LONG).show();
-                                    plant.setPotId("");
-                                }
-                                loadingBar.setVisibility(View.GONE);
-                                performPlantOperation();
-                                updateDisplayMode();
+                        if(pc.isNetworkAvailable() && !potId.equals("")) {
+                            pc.isValidSmartPot(potId, new VolleyCallback() {
+                                @Override
+                                public void onResponse(boolean success) {
+                                    if (success) plant.setPotId(potId);
+                                    else {
+                                        Toast.makeText(getContext(), "Pot ID is not valid.", Toast.LENGTH_LONG).show();
+                                        plant.setPotId("");
+                                    }
+                                    loadingBar.setVisibility(View.GONE);
+                                    performPlantOperation();
+                                    updateDisplayMode();
 
-                            }
-                        });
+                                }
+                            });
+                        } else {
+                            loadingBar.setVisibility(View.GONE);
+                            performPlantOperation();
+                            updateDisplayMode();
+                        }
                         break;
 
                     case VIEWPLANT:

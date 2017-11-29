@@ -128,12 +128,15 @@ public class PlantFragment extends Fragment {
 
             //If potID is not null, make request to Server
             if (!potId.equals("")) {
-                pc.updatePlant(plantIndex, potId, new VolleyCallback() {
+                pc.updatePlant(potId, new VolleyCallback() {
                     @Override
-                    public void onResponse(boolean success, String potId, int moistureLevel, Date timeStamp) {
+                    public void onResponse(boolean success, String potId, int moistureLevel, int waterLevel, Date timeStamp) {
                         if (success) {
-                            plants.get(plantIndex).setMoistureLevel(moistureLevel);
-                            plants.get(plantIndex).setLastWatered(timeStamp);
+                            Plant p = plants.get(plantIndex);
+                            p.setMoistureLevel(moistureLevel);
+                            p.setLastWatered(timeStamp);
+                            p.setWaterLevel(waterLevel);
+                            pc.updatePlant(p);
                             plantAdapter.notifyDataSetChanged();
                         }
                         else {

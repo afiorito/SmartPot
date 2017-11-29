@@ -8,5 +8,5 @@ import java.util.Date;
 
 public interface VolleyResponse {
     void onResponse(boolean success);
-    void onResponse(boolean success, String potId, int moistureLevel, Date time);
+    void onResponse(boolean success, String potId, int moistureLevel, int waterLevel, Date time);
 }

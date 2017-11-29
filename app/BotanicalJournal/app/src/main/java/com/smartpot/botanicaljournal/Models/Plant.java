@@ -116,8 +116,8 @@ public class Plant {
     public void setMoistureLevel(int moistureLevel) {
         this.moistureLevel = moistureLevel;
     }
-    public void setWaterLevel(int moistureLevel) {
-        this.moistureLevel = moistureLevel;
+    public void setWaterLevel(int waterLevel) {
+        this.waterLevel = waterLevel;
     }
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
