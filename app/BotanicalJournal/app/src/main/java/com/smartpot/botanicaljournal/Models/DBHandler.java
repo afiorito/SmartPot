@@ -273,6 +273,10 @@ public class DBHandler extends SQLiteOpenHelper {
             moistureValues.add(new Data(date, moistureValue));
             Log.d("getMoistureValue", "added value");
             c.moveToPrevious();
+
+            Date mDate = new Date(date);
+            SimpleDateFormat mFormat = new SimpleDateFormat("yy'/'MM'/'dd");
+            Log.d("getMoistureValue", "date: " + mFormat.format(mDate));
         }
 
         Log.d("getMoistureValue", "closed");
@@ -322,6 +326,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COL_MOISTURE_VALUE, value);
         cv.put(COL_PLANT_ID, p.getId());
+        cv.put(COL_CREATED_AT, new Date().getTime());
 
         db.insert(TABLE_MOISTURE_LEVEL, null, cv);
 

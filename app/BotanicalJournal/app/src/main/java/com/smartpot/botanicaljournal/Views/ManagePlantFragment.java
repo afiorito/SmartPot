@@ -277,6 +277,13 @@ public class ManagePlantFragment extends Fragment {
                     moistureLayout.setOnClickListener(setMoistureLayout);
                     Log.d("ManagePlantFragment", "setMoistureLayoutClickable");
                     moistureLayout.setVisibility(View.VISIBLE);
+                    ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
+                    if (moistureValues.size() > 0) {
+                        Log.d("ManagePlantFragment", "nbr of values in db: " + Integer.toString(moistureValues.size()));
+                        setMoistureGraph(moistureValues);
+                        moistureGraph.setVisibility(View.VISIBLE);
+                        moistureGraphState = true;
+                    }
                     waterLayout.setVisibility(View.VISIBLE);
                     refreshLayout.setEnabled(true);
                     updateLastWateredButton.setText("Water");
@@ -420,16 +427,26 @@ public class ManagePlantFragment extends Fragment {
      */
     private void setMoistureGraph(ArrayList<Data> moistureValues){
         int nbrValues = moistureValues.size();
+        int nbrValuesDisplayed = 5;
+        if (nbrValues < nbrValuesDisplayed)
+            nbrValuesDisplayed = nbrValues;
         moistureGraph = view.findViewById(R.id.moistureGraph);
 
         ArrayList<Entry> entries = new ArrayList<>();
 
         // Get reference value to use timestamp as a float value
         long date;
-        long reference = moistureValues.get(0).getValue();
-        for (int i = 0; i < nbrValues; i++) { // get last values
+        long reference = moistureValues.get(0).getDate();
+        Log.d("ManagePlantFragment", "reference: " + moistureValues.get(0).getDate());
+        Log.d("ManagePlantFragment", "nbr of values in db: " + Integer.toString(moistureValues.size()));
+        for (int i = 0; i < nbrValuesDisplayed; i++) { // get last values
             date = moistureValues.get(i).getDate() - reference;
             entries.add(new Entry(date, moistureValues.get(i).getValue()));
+
+            Date mDate = new Date(moistureValues.get(i).getDate());
+            //SimpleDateFormat mFormat = new SimpleDateFormat("yy'/'MM'/'dd");
+            SimpleDateFormat mFormat = new SimpleDateFormat("hh:mm");
+            Log.d("ManagePlantFragment", "date: " + mFormat.format(mDate) + ", value: " + moistureValues.get(i).getValue());
         }
 
 
@@ -459,9 +476,9 @@ public class ManagePlantFragment extends Fragment {
         //moistureGraph.setVisibleXRangeMaximum(nbrValues); //WISH THIS WORKED
         //moistureGraph.setVisibleXRangeMinimum(nbrValues);
         //moistureGraph.setVisibleXRange(1, 2);
-        xAxis.setLabelCount(nbrValues, true);
+        xAxis.setLabelCount(nbrValuesDisplayed, true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter(new SimpleDateFormat("yy'/'MM'/'dd"), reference); // Set format here if updating at different intervals
+        IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter(new SimpleDateFormat("hh:mm"), reference); // Set format here if updating at different intervals
         xAxis.setValueFormatter(xAxisFormatter);
 
         //Set Y-Axis
