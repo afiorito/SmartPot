@@ -183,7 +183,7 @@ public class DBHandler extends SQLiteOpenHelper {
             Date birthDate = date == 0 ? null : new Date(date);
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
             Date lastWatered = getMostRecentLastWateredValue(id);
-            int waterLevel = getMostRecentLevelValue(id);
+            int waterLevel = c.getInt(c.getColumnIndex(COL_PLANT_WATER_LEVEL));
             int moistureLevel = getMostRecentMoistureValue(id);
             String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
             String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
@@ -298,27 +298,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
 
         return lastWatered;
-    }
-
-
-    public int getMostRecentLevelValue(long id) {
-        SQLiteDatabase db = getReadableDatabase();
-        int waterLevel = -1;
-
-        String query = "SELECT " + COL_PLANT_WATER_LEVEL + " FROM " + TABLE_PLANTS
-                + " WHERE " + COL_ID + " = " + id + ";";
-
-        Cursor c = db.rawQuery(query, null);
-
-        if(c.moveToFirst()) {
-            waterLevel = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_LEVEL));
-        }
-
-        c.close();
-        db.close();
-
-        return waterLevel;
-
     }
 
     public void deletePlant(long id) {

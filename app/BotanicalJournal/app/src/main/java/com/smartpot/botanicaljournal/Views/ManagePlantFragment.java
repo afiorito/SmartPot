@@ -71,7 +71,7 @@ public class ManagePlantFragment extends Fragment {
     private ProfileField plantNameField;
     private ProfileField plantPhylogenyField;
     private ProgressBar progressBar;
-    private ProgressBar levelBar;
+    private ProgressBar waterBar;
     private LineChart moistureGraph;
     private ProfileField lastWateredField;
     private EditText notesEditText;
@@ -89,6 +89,7 @@ public class ManagePlantFragment extends Fragment {
     // References to layouts
     Menu menu;
     RelativeLayout moistureLayout;
+    RelativeLayout waterLayout;
     RelativeLayout lastWateredLayout;
     RelativeLayout potIdLayout;
     RelativeLayout bDayLayout;
@@ -121,7 +122,7 @@ public class ManagePlantFragment extends Fragment {
                     public void onRefresh() {
                         ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
                         if (moistureValues.size() > 0)
-                            setMoistureGraph(moistureValues);
+                            setMoistureGraph(pc.getMoistureLevels(plant));
                         refreshLayout.setRefreshing(false);
                     }
                 }
@@ -139,12 +140,13 @@ public class ManagePlantFragment extends Fragment {
         lastWateredLayout = view.findViewById(R.id.lastWateredLayout);
         moistureLayout = view.findViewById(R.id.moistureLayout);
         moistureLayout.setOnClickListener(setMoistureLayout);
+        waterLayout = view.findViewById(R.id.waterLevelLayout);
         potIdLayout = view.findViewById(R.id.potIdLayout);
         bDayLayout = view.findViewById(R.id.bDayLayout);
         plantNameField = view.findViewById(R.id.plantName);
         plantPhylogenyField = view.findViewById(R.id.plantPhylogeny);
         progressBar = view.findViewById(R.id.moistureBar);
-        levelBar = view.findViewById(R.id.levelBar);
+        waterBar = view.findViewById(R.id.waterBar);
         lastWateredField = view.findViewById(R.id.lastWatered);
         notesEditText = view.findViewById(R.id.notesEditText);
         potIdEditText = view.findViewById(R.id.potIdEditText);
@@ -190,6 +192,7 @@ public class ManagePlantFragment extends Fragment {
                 ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Add A Plant"); // Set title of navigation bar
 
                 moistureLayout.setVisibility(View.GONE);
+                waterLayout.setVisibility(View.GONE);
                 refreshLayout.setRefreshing(false);
                 refreshLayout.setEnabled(false);
                 lastWateredLayout.setVisibility(View.GONE);
@@ -223,11 +226,13 @@ public class ManagePlantFragment extends Fragment {
                 moistureLayout.setClickable(false);
                 if(plant.getPotId().equals("")) {
                     moistureLayout.setVisibility(View.GONE);
+                    waterLayout.setVisibility(View.GONE);
                     updateLastWateredButton.setText("Update");
                     settingsButton.setVisibility(View.GONE);
                 }
                 else {
                     moistureLayout.setVisibility(View.VISIBLE);
+                    waterLayout.setVisibility(View.VISIBLE);
                     updateLastWateredButton.setText("Water");
                     settingsButton.setVisibility(View.VISIBLE);
                 }
@@ -250,6 +255,7 @@ public class ManagePlantFragment extends Fragment {
 
                 if(plant.getPotId().equals("")) {
                     moistureLayout.setVisibility(View.GONE);
+                    waterLayout.setVisibility(View.GONE);
                     refreshLayout.setRefreshing(false);
                     refreshLayout.setEnabled(false);
                     updateLastWateredButton.setText("Update");
@@ -258,6 +264,7 @@ public class ManagePlantFragment extends Fragment {
                     moistureLayout.setOnClickListener(setMoistureLayout);
                     Log.d("ManagePlantFragment", "setMoistureLayoutClickable");
                     moistureLayout.setVisibility(View.VISIBLE);
+                    waterLayout.setVisibility(View.VISIBLE);
                     refreshLayout.setEnabled(true);
                     updateLastWateredButton.setText("Water");
                 }
@@ -376,14 +383,11 @@ public class ManagePlantFragment extends Fragment {
     RelativeLayout.OnClickListener setMoistureLayout = new RelativeLayout.OnClickListener() {
         @Override
         public void onClick(View v){
-            Log.d("ManagePlantFragment", "setMoistureLayout");
             ArrayList<Data> moistureValues = pc.getMoistureLevels(plant);
-            Log.d("ManagePlantFragment", Integer.toString(moistureValues.size()));
             if (moistureValues.size() > 0) {
                 if (moistureGraphState == false) {
-                        Log.d("ManagePlantFragment", "setMoistureLayout, starting graph");
-                        setMoistureGraph(moistureValues);
-                        moistureGraph.setVisibility(View.VISIBLE);
+                    setMoistureGraph(moistureValues);
+                    moistureGraph.setVisibility(View.VISIBLE);
                 } else {
                         moistureGraph.setVisibility(View.GONE);
                 }
@@ -517,7 +521,7 @@ public class ManagePlantFragment extends Fragment {
         plantNameField.setText(plant.getName());
         plantPhylogenyField.setText(plant.getPhylogeny());
         progressBar.setProgress(plant.getMoistureLevel());
-        levelBar.setProgress(plant.getWaterLevel());
+        waterBar.setProgress(plant.getWaterLevel());
         String date = formatDate(plant.getBirthDate());
         bDayField.setText(date.equals("") ? "Enter Birthday" : date);
         lastWateredField.setText(ViewHelper.formatLastWateredTime(plant.getLastWatered()));

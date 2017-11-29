@@ -132,17 +132,18 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/waterIcon"
+                    android:id="@+id/moistIcon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_water" />
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/moistureIcon"
+                    android:src="@drawable/ic_moist" />
 
                 <TextView
                     android:id="@+id/moistureLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/waterIcon"
+                    android:layout_toEndOf="@+id/moistIcon"
                     android:includeFontPadding="false"
                     android:text="@string/moistureLevelText"
                     android:textColor="@color/colorDarkAccent"
@@ -183,25 +184,62 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/waterLevelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/waterIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/waterIcon"
+                    android:src="@drawable/ic_water" />
+
+                <TextView
+                    android:id="@+id/waterLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/waterIcon"
+                    android:includeFontPadding="false"
+                    android:text="@string/waterLevelLabel"
+                    android:textColor="@color/colorDarkAccent"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/border6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/waterLabel"
+                    android:contentDescription="@string/borderDesc"
+                    android:src="@color/colorDarkAccent" />
+
+                <ProgressBar
+                    android:id="@+id/waterBar"
+                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_below="@+id/border6"
+                    android:layout_marginTop="8dp"
+                    android:max="100"
+                    android:progressDrawable="@layout/progress_bar"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintVertical_bias="1.0" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/lastWateredLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical">
-
-                <ProgressBar
-                    android:id="@+id/levelBar"
-                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:layout_below="@+id/lastWatered"
-                    android:layout_marginTop="8dp"
-                    android:max="100"
-                    android:progressDrawable="@layout/progress_bar"
-                    android:visibility="visible"
-                    custom:layout_constraintBottom_toBottomOf="parent"
-                    custom:layout_constraintHorizontal_bias="0.0"
-                    custom:layout_constraintVertical_bias="1.0" />
 
                 <ImageView
                     android:id="@+id/border3"
