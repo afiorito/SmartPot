@@ -59,6 +59,10 @@ public class Plant {
         this.notes = notes;
     }
 
+    public Plant(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
@@ -81,7 +85,7 @@ public class Plant {
         return moistureLevel;
     }
     public int getWaterLevel() {
-        return moistureLevel;
+        return waterLevel;
     }
     public String getPhylogeny() {
         return phylogeny;

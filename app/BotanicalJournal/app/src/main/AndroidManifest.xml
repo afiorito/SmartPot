@@ -4,6 +4,7 @@
 
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -20,6 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:process=":remote" android:name=".DataRetriever"></receiver>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.smartpot.botanicaljournal.fileprovider"
@@ -31,5 +33,6 @@
         </provider>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

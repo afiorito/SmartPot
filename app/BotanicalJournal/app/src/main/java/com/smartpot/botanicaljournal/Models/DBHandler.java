@@ -316,14 +316,13 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
-    public void addMoistureLevelForPlant(Long id, long date, int value) {
+    public void addMoistureLevelForPlant(Plant p, int value) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
         cv.put(COL_MOISTURE_VALUE, value);
-        cv.put(COL_CREATED_AT, date);
-        cv.put(COL_PLANT_ID, id);
-        Log.d("getMoistureValues", "Plant ID = " + Long.toString(id));
+        cv.put(COL_PLANT_ID, p.getId());
+
         db.insert(TABLE_MOISTURE_LEVEL, null, cv);
 
         db.close();

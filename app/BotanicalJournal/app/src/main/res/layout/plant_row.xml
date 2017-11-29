@@ -94,7 +94,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:max="100"
+        android:max="900"
         android:progressDrawable="@layout/progress_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

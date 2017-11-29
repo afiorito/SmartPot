@@ -245,6 +245,10 @@ public class PlantController {
     public MoistureInterval getMoistureInterval(long id) {
         return handler.getMoistureInterval(id);
     }
+    public void addMoistureLevelForPlant(long plantId, int value) {
+        handler.addMoistureLevelForPlant(new Plant(plantId), value);
+    }
+
 
     public void setPotStatus(Plant p, int status) {
         toggleSmartPot(p.getPotId(), status);

@@ -128,6 +128,7 @@ public class ManagePlantFragment extends Fragment {
                                         plant.setMoistureLevel(moistureLevel);
                                         plant.setWaterLevel(waterLevel);
                                         plant.setLastWatered(time);
+                                        setFieldValues();
                                     }
                                 }
                             });
