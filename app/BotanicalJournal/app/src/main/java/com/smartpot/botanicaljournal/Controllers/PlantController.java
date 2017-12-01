@@ -75,8 +75,7 @@ public class PlantController {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("TAG", error.getMessage());
-
+                        callback.onResponse(false);
                     }
                 });
         requestQueue.add(jsObjRequest);
@@ -120,7 +119,7 @@ public class PlantController {
                     @Override
                     public void onErrorResponse(VolleyError error)
                     {
-                        Log.e(TAG, error.toString());
+
                     }
                 });
 
