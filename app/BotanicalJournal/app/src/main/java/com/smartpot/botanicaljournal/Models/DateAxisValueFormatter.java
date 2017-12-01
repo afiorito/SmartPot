@@ -35,7 +35,7 @@ public class DateAxisValueFormatter implements IAxisValueFormatter {
         // Convert timestamp to format
         mDate = new Date(originalTimestamp);
         //Log.d("ManagePlantFragment", "original date:" + Long.toString(originalTimestamp));
-        //Log.d("ManagePlantFragment", "formatted date:" + mDataFormat.format(mDate));
+        Log.d("ManagePlantFragment", "formatted date:" + mDataFormat.format(mDate));
         return mDataFormat.format(mDate);
     }
 

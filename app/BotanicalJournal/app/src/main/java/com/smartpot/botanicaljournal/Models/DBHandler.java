@@ -189,12 +189,17 @@ public class DBHandler extends SQLiteOpenHelper {
             long bdate = c.getLong(c.getColumnIndex(COL_PLANT_BIRTH_DATE));
             Date birthDate = bdate == 0 ? null : new Date(bdate);
             String notes = c.getString(c.getColumnIndex(COL_PLANT_NOTES));
-            long date = c.getLong(c.getColumnIndex(COL_PLANT_LAST_WATERED));
-            Date lastWatered = date == 0 ? null : new Date(date);
             int waterLevel = c.getInt(c.getColumnIndex(COL_PLANT_WATER_LEVEL));
             int moistureLevel = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_LEVEL));
             String imagePath = c.getString(c.getColumnIndex(COL_PLANT_IMAGE));
             String potId = c.getString(c.getColumnIndex(COL_PLANT_POT_ID));
+            Date lastWatered;
+            if(!potId.equals("")) {
+                long date = c.getLong(c.getColumnIndex(COL_PLANT_LAST_WATERED));
+                lastWatered = date == 0 ? null : new Date(date);
+            } else {
+                lastWatered = getMostRecentLastWateredValue(id);
+            }
             int interval = c.getInt(c.getColumnIndex(COL_PLANT_MOISTURE_INTERVAL));
             MoistureInterval moistureInterval = MoistureInterval.values()[interval];
             boolean potStatus = c.getInt(c.getColumnIndex(COL_PLANT_POT_STATUS)) > 0;

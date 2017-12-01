@@ -483,7 +483,7 @@ public class ManagePlantFragment extends Fragment {
 
         //Set Y-Axis
         moistureGraph.animateY(1000, Easing.EasingOption.EaseOutBack);
-        moistureGraph.getAxisLeft().setAxisMaximum(100);
+        moistureGraph.getAxisLeft().setAxisMaximum(900);
         moistureGraph.getAxisLeft().setAxisMinimum(0);
         moistureGraph.getAxisLeft().setTextColor(getResources().getColor(R.color.hintColor));
     }
