@@ -5,6 +5,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ public class PlantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_plant, container, false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Botanical Journal"); // Set title of navigation bar
 
         // Initialize Database Controller
         pc = new PlantController(getContext());
@@ -126,12 +128,15 @@ public class PlantFragment extends Fragment {
 
             //If potID is not null, make request to Server
             if (!potId.equals("")) {
-                pc.updatePlant(plantIndex, potId, new VolleyCallback() {
+                pc.updatePlant(potId, new VolleyCallback() {
                     @Override
-                    public void onResponse(boolean success, String potId, int moistureLevel, Date timeStamp) {
+                    public void onResponse(boolean success, String potId, int moistureLevel, int waterLevel, Date timeStamp) {
                         if (success) {
-                            plants.get(plantIndex).setMoistureLevel(moistureLevel);
-                            plants.get(plantIndex).setLastWatered(timeStamp);
+                            Plant p = plants.get(plantIndex);
+                            p.setMoistureLevel(moistureLevel);
+                            p.setLastWatered(timeStamp);
+                            p.setWaterLevel(waterLevel);
+                            pc.updatePlant(p);
                             plantAdapter.notifyDataSetChanged();
                         }
                         else {

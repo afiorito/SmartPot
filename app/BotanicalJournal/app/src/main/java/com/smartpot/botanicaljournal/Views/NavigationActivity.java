@@ -1,5 +1,10 @@
 package com.smartpot.botanicaljournal.Views;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.SystemClock;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -12,12 +17,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.smartpot.botanicaljournal.Controllers.PlantController;
+import com.smartpot.botanicaljournal.DataRetriever;
 import com.smartpot.botanicaljournal.Models.Plant;
 import com.smartpot.botanicaljournal.Helpers.PlantViewState;
 import com.smartpot.botanicaljournal.R;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -37,6 +47,8 @@ public class NavigationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         pc = new PlantController(this);
+
+        setupAlarms();
 
         plantCountTextView = navigationView.getHeaderView(0).findViewById(R.id.plantCountTextView);
         updatePlantCount();
@@ -71,6 +83,27 @@ public class NavigationActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    public final static String ALARM_POT_ID = "pot_id";
+    public final static String ALARM_PLANT_ID = "plant_id";
+
+    private void setupAlarms() {
+        ArrayList<Plant> plants = pc.getPlants();
+
+        for(Plant plant : plants) {
+            if (!plant.getPotId().equals("")) {
+                Log.i("TAG", "Setting Alarm For: " + plant.getPotId());
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(this, DataRetriever.class);
+                intent.putExtra(ALARM_POT_ID, plant.getPotId());
+                intent.putExtra(ALARM_PLANT_ID, plant.getId());
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+                alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+            }
+        }
+
+    }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -94,10 +127,6 @@ public class NavigationActivity extends AppCompatActivity
             ManagePlantFragment managePlantFragment = ManagePlantFragment.newInstance(PlantViewState.ADDPLANT);
             managePlantFragment.setPlant(new Plant());
             transaction.replace(R.id.frame_layout, managePlantFragment).addToBackStack(null).commit();
-        }
-        else if (id == R.id.settings) {
-            getSupportActionBar().setTitle("Settings");
-            transaction.replace(R.id.frame_layout, SettingsFragment.newInstance()).addToBackStack(null).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

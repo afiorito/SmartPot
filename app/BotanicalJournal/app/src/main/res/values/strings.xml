@@ -22,4 +22,9 @@
     <string name="borderDesc">Bottom Grey Border</string>
     <string name="pot_id_label">Pot ID:</string>
     <string name="pot_id_hint">xxx-xxx-xx</string>
+    <string name="MoistureIntervalLabel">Moisture Data Interval</string>
+    <string name="runningStatusLabel">SmartPot Running Status</string>
+    <string name="waterLevelLabel">Water Level</string>
+    <string name="waterIcon">Water Icon</string>
+    <string name="moistureIcon">Moisture Icon</string>
 </resources>

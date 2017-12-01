@@ -11,5 +11,10 @@ public class VolleyCallback implements VolleyResponse {
     public void onResponse(boolean success) {}
 
     @Override
-    public void onResponse(boolean success, String potId, int moistureLevel, Date time) {}
+    public void onResponse(boolean success, int moisture) {
+
+    }
+
+    @Override
+    public void onResponse(boolean success, String potId, int moistureLevel, int waterLevel, Date time) {}
 }

@@ -40,7 +40,13 @@ async function get(event) {
 
 async function put(event) {
   const potId = event.pathParameters.potId;
-  const { waterLevel } = JSON.parse(event.body);
+  let { waterLevel } = JSON.parse(event.body);
+
+  if(waterLevel - 50 < 0) {
+    waterLevel = 2
+  } else {
+    waterLevel = waterLevel - 50;
+  }
 
   await updateAttribute({ waterLevel }, potId);
 
