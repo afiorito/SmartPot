@@ -1,1 +1,0 @@
-# Smart Pot Documentation
